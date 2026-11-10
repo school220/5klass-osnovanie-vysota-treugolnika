@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Математика 5 класс: Основание и высота треугольника</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Smartboard Navigation Bar -->
+  <header class="board-header">
+    <div class="header-left">
+      <div class="lesson-badge">
+        <span class="badge-icon">🔺</span>
+        <div class="badge-text">
+          <span class="badge-title">5 КЛАСС • МАТЕМАТИКА</span>
+          <span class="badge-sub">Основание и высота треугольника (45 мин)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step Navigation Buttons (Touch Friendly) -->
+    <nav class="steps-nav" id="stepsNav">
+      <button class="step-btn active" data-step="intro">
+        <span class="btn-num">🏠</span>
+        <span class="btn-text">Старт</span>
+      </button>
+      <button class="step-btn" data-step="step1">
+        <span class="btn-num">1</span>
+        <span class="btn-text">Основание</span>
+        <span class="btn-time">0–10м</span>
+      </button>
+      <button class="step-btn" data-step="step2">
+        <span class="btn-num">2</span>
+        <span class="btn-text">3 случая высоты</span>
+        <span class="btn-time">10–22м</span>
+      </button>
+      <button class="step-btn" data-step="step3">
+        <span class="btn-num">3</span>
+        <span class="btn-text">Угольник & S</span>
+        <span class="btn-time">22–32м</span>
+      </button>
+      <button class="step-btn" data-step="step4">
+        <span class="btn-num">4</span>
+        <span class="btn-text">Практикум</span>
+        <span class="btn-time">32–45м</span>
+      </button>
+      <button class="step-btn quiz-btn" data-step="quiz">
+        <span class="btn-num">🏆</span>
+        <span class="btn-text">Квиз</span>
+      </button>
+    </nav>
+
+    <!-- Whiteboard Utility Controls -->
+    <div class="header-right">
+      <!-- Lesson Timer Pill -->
+      <div class="timer-widget" id="timerWidget">
+        <button class="timer-display-btn" id="timerDisplayBtn" title="Таймер урока">
+          <span class="timer-icon">⏱️</span>
+          <span class="timer-value" id="timerDisplay">45:00</span>
+        </button>
+        <div class="timer-dropdown" id="timerDropdown">
+          <div class="timer-presets">
+            <span class="preset-label">Быстрый таймер:</span>
+            <div class="preset-grid">
+              <button class="preset-btn" data-mins="1">1 мин (Опрос)</button>
+              <button class="preset-btn" data-mins="3">3 мин</button>
+              <button class="preset-btn" data-mins="5">5 мин ✍️</button>
+              <button class="preset-btn" data-mins="8">8 мин ✍️</button>
+              <button class="preset-btn" data-mins="9">9 мин ✍️</button>
+              <button class="preset-btn" data-mins="12">12 мин</button>
+              <button class="preset-btn" data-mins="45">45 мин (Урок)</button>
+            </div>
+          </div>
+          <div class="timer-actions">
+            <button class="ctrl-btn play" id="timerToggleBtn">▶ Старт</button>
+            <button class="ctrl-btn reset" id="timerResetBtn">↺ Сброс</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Whiteboard Drawing Tool Toggle -->
+      <button class="tool-btn pen-toggle" id="penToggleBtn" title="Маркер для рисования на доске">
+        <span class="tool-icon">✏️</span>
+        <span class="tool-label">Маркер</span>
+      </button>
+
+      <!-- Sound Toggle -->
+      <button class="tool-btn sound-toggle" id="soundToggleBtn" title="Звуки">
+        <span class="tool-icon" id="soundIcon">🔊</span>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button class="tool-btn fullscreen-toggle" id="fullscreenBtn" title="На весь экран">
+        <span class="tool-icon">⛶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Marker Overlay for Smartboard -->
+  <div class="drawing-overlay" id="drawingOverlay">
+    <canvas id="drawingCanvas"></canvas>
+    <div class="pen-toolbar" id="penToolbar">
+      <div class="pen-color-picker">
+        <button class="color-dot active" style="background: #f59e0b;" data-color="#f59e0b" title="Жёлтый"></button>
+        <button class="color-dot" style="background: #ef4444;" data-color="#ef4444" title="Красный"></button>
+        <button class="color-dot" style="background: #10b981;" data-color="#10b981" title="Зелёный"></button>
+        <button class="color-dot" style="background: #3b82f6;" data-color="#3b82f6" title="Синий"></button>
+        <button class="color-dot" style="background: #ffffff; border: 2px solid #94a3b8;" data-color="#ffffff" title="Белый"></button>
+      </div>
+      <div class="pen-size-picker">
+        <button class="size-btn active" data-size="4">Тонкий</button>
+        <button class="size-btn" data-size="8">Средний</button>
+        <button class="size-btn" data-size="14">Маркер</button>
+      </div>
+      <button class="pen-action-btn eraser" id="eraserBtn" title="Ластик">🧹 Ластик</button>
+      <button class="pen-action-btn clear" id="clearCanvasBtn" title="Стереть всё">🗑️ Очистить</button>
+      <button class="pen-action-btn close" id="closePenBtn" title="Закрыть маркер">✕ Выход</button>
+    </div>
+  </div>
+
+  <!-- Main Content Stage -->
+  <main class="lesson-stage">
+
+    <!-- 0. INTRO SCREEN -->
+    <section class="stage-section active" id="sec-intro">
+      <div class="intro-container">
+        <div class="intro-hero">
+          <div class="hero-tag">УРОК МАТЕМАТИКИ • 5 КЛАСС</div>
+          <h1 class="hero-title">Основание и высота треугольника</h1>
+          <p class="hero-subtitle">
+            Элементы треугольника, выбор любого основания, 3 случая высоты (<span class="math-hl">h</span>), проверка угольником и формула площади (<span class="math-hl">S</span>)
+          </p>
+        </div>
+
+        <div class="intro-cards-grid">
+          <div class="intro-card card-step1" onclick="switchStep('step1')">
+            <div class="card-step-badge">ШАГ 1 • 0–10 МИН</div>
+            <div class="card-icon">🔺</div>
+            <h3>Основание треугольника</h3>
+            <p>Почему любая сторона может быть основанием, и что такое противолежащая вершина.</p>
+            <div class="card-action">Начать шаг 1 ➔</div>
+          </div>
+
+          <div class="intro-card card-step2" onclick="switchStep('step2')">
+            <div class="card-step-badge">ШАГ 2 • 10–22 МИН</div>
+            <div class="card-icon">📐</div>
+            <h3>3 случая высоты (h)</h3>
+            <p>В прямоугольном (сторона), в остроугольном (внутри) и в тупоугольном (снаружи!).</p>
+            <div class="card-action">Начать шаг 2 ➔</div>
+          </div>
+
+          <div class="intro-card card-step3" onclick="switchStep('step3')">
+            <div class="card-step-badge">ШАГ 3 • 22–32 МИН</div>
+            <div class="card-icon">📏</div>
+            <h3>Проверка угольником & S</h3>
+            <p>2 правила проверки высоты, формула площади S = (a · h) : 2 и периметр P.</p>
+            <div class="card-action">Начать шаг 3 ➔</div>
+          </div>
+
+          <div class="intro-card card-step4" onclick="switchStep('step4')">
+            <div class="card-step-badge">ШАГ 4 • 32–45 МИН</div>
+            <div class="card-icon">📝</div>
+            <h3>Практикум и задачи</h3>
+            <p>Разбор карточек из тетради с ловушками и 2 типовые задачи для тетради.</p>
+            <div class="card-action">Начать шаг 4 ➔</div>
+          </div>
+        </div>
+
+        <div class="intro-footer-banner">
+          <div class="banner-content">
+            <span class="banner-emoji">💡</span>
+            <div>
+              <strong>Инструкция для электронной доски:</strong>
+              Все элементы адаптированы под касания стилусом и пальцем. Вверху доступен маркер для заметок и таймер для записей в тетрадь!
+            </div>
+          </div>
+          <button class="primary-big-btn" onclick="switchStep('step1')">
+            🚀 Начать урок (Шаг 1)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. STEP 1: ELEMENTS & BASE SELECTION (0-10 MIN) -->
+    <section class="stage-section" id="sec-step1">
+      <div class="section-header-row">
+        <div class="section-title-wrap">
+          <span class="step-pill">ШАГ 1 ИЗ 4 (0–10 МИН)</span>
+          <h2>Из чего состоит треугольник и что называют основанием</h2>
+        </div>
+        <button class="notebook-quick-btn" onclick="openNotebookModal(1)">
+          ✍️ Запись в тетрадь #1 (~8 мин)
+        </button>
+      </div>
+
+      <div class="two-col-grid">
+        <!-- Left: Interactive Triangle with Base Switcher -->
+        <div class="card interactive-panel">
+          <div class="panel-header">
+            <h4>Кликните на сторону, чтобы сделать её основанием:</h4>
+            <span class="panel-tag" id="currentBaseTag">Основание: сторона BC (красная)</span>
+          </div>
+
+          <!-- SVG Visualizer -->
+          <div class="svg-stage">
+            <svg id="triangleSvg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <pattern id="gridPatternT" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#gridPatternT)" rx="16" />
+              <g id="triangleSvgGroup"></g>
+            </svg>
+          </div>
+
+          <!-- Base Switcher Buttons -->
+          <div class="base-picker-bar">
+            <button class="base-select-btn active" id="btnBaseBC" onclick="setTriangleBase('BC')">
+              🔴 Сторона BC (внизу) ➔ Противолежащая: A
+            </button>
+            <button class="base-select-btn" id="btnBaseAC" onclick="setTriangleBase('AC')">
+              🔴 Сторона AC (сбоку) ➔ Противолежащая: B
+            </button>
+            <button class="base-select-btn" id="btnBaseAB" onclick="setTriangleBase('AB')">
+              🔴 Сторона AB (сбоку) ➔ Противолежащая: C
+            </button>
+          </div>
+
+          <!-- House Metaphor Callout -->
+          <div class="metaphor-callout">
+            <span class="metaphor-icon">🏠</span>
+            <div class="metaphor-text">
+              <strong>В отличие от дома, у которого фундамент всегда внизу:</strong>
+              В треугольнике основанием может быть <em>абсолютно любая из 3 сторон</em>! В учебнике выбранное основание выделяют <strong style="color: #dc2626;">красной линией</strong>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Theory Cards & Triangle Types -->
+        <div class="theory-panel">
+          <!-- Main Elements Summary -->
+          <div class="card theory-card">
+            <h3>📐 Основные элементы △ABC</h3>
+            <div class="elements-pills-row">
+              <div class="elem-pill">
+                <span class="pill-badge">3 ВЕРШИНЫ</span>
+                <strong>Точки A, B, C</strong>
+              </div>
+              <div class="elem-pill">
+                <span class="pill-badge">3 СТОРОНЫ</span>
+                <strong>Отрезки AB, BC, AC</strong>
+              </div>
+              <div class="elem-pill">
+                <span class="pill-badge">3 УГЛА</span>
+                <strong>∠A + ∠B + ∠C = 180°</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Types by Angles -->
+          <div class="card theory-card">
+            <h3>🔍 Виды треугольников по углам</h3>
+            <div class="tri-types-grid">
+              <div class="type-mini-card active" id="tt-acute" onclick="showTriTypeDemo('acute')">
+                <div class="type-icon">📐</div>
+                <strong>1. Остроугольный</strong>
+                <p>Все 3 угла острые (меньше 90°).</p>
+              </div>
+              <div class="type-mini-card" id="tt-right" onclick="showTriTypeDemo('right')">
+                <div class="type-icon">📏</div>
+                <strong>2. Прямоугольный</strong>
+                <p>Один угол прямой (ровно 90°).</p>
+              </div>
+              <div class="type-mini-card" id="tt-obtuse" onclick="showTriTypeDemo('obtuse')">
+                <div class="type-icon">⚡</div>
+                <strong>3. Тупоугольный</strong>
+                <p>Один угол тупой (больше 90°).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opposite Vertex & Height Definition -->
+          <div class="card rule-card">
+            <div class="rule-header">
+              <span class="rule-icon">⭐</span>
+              <strong>Определение высоты (h):</strong>
+            </div>
+            <p>
+              <strong>Высота треугольника (h)</strong> — это перпендикуляр (отрезок под прямым углом 90°), опущенный из <strong>противолежащей вершины</strong> на основание (или на его продолжение).
+            </p>
+            <div class="symbol-badge">
+              Символ <strong>⊥</strong> читается как «перпендикулярно» (под углом 90°)
+            </div>
+          </div>
+
+          <!-- Bottom Footer -->
+          <div class="step-nav-footer">
+            <button class="notebook-action-btn" onclick="openNotebookModal(1)">
+              ✍️ Открыть образец для тетради #1
+            </button>
+            <button class="next-step-btn" onclick="switchStep('step2')">
+              Перейти к Шагу 2 ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. STEP 2: THREE CASES OF HEIGHT (10-22 MIN) -->
+    <section class="stage-section" id="sec-step2">
+      <div class="section-header-row">
+        <div class="section-title-wrap">
+          <span class="step-pill">ШАГ 2 ИЗ 4 (10–22 МИН)</span>
+          <h2>Три случая расположения высоты (стр. 91–92 учебника)</h2>
+        </div>
+        <button class="notebook-quick-btn" onclick="openNotebookModal(2)">
+          ✍️ Запись в тетрадь #2 (~9 мин)
+        </button>
+      </div>
+
+      <!-- 3 Cases Tabs -->
+      <div class="cases-tab-bar">
+        <button class="case-tab active" id="caseTabA" onclick="switchHeightCase('a')">
+          <span class="case-letter">a)</span> Прямоугольный △ABC (совпадает со стороной)
+        </button>
+        <button class="case-tab" id="caseTabB" onclick="switchHeightCase('b')">
+          <span class="case-letter">b)</span> Остроугольный △DEF (высота ВНУТРИ)
+        </button>
+        <button class="case-tab" id="caseTabC" onclick="switchHeightCase('c')">
+          <span class="case-letter">c)</span> Тупоугольный △WXY (высота СНАРУЖИ!)
+        </button>
+      </div>
+
+      <div class="two-col-grid">
+        <!-- Left: Case Visual Stage -->
+        <div class="card interactive-panel">
+          <div class="case-desc-banner" id="caseDescBanner">
+            <strong id="caseTitleText">Случай а: Прямоугольный треугольник △ABC</strong>
+            <p id="caseBodyText">Основание BC, противолежащая вершина A. Так как угол ∠C = 90°, сторона AC ⊥ BC. Боковая сторона сама является высотой!</p>
+          </div>
+
+          <div class="svg-stage">
+            <svg id="caseSvg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <pattern id="gridPatternCase" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#gridPatternCase)" rx="16" />
+              <g id="caseSvgGroup"></g>
+            </svg>
+          </div>
+
+          <!-- Highlight Action Buttons -->
+          <div class="case-actions-bar">
+            <button class="case-act-btn active" id="btnHlHeight" onclick="toggleCaseHighlight('height')">
+              📏 Показать высоту (h)
+            </button>
+            <button class="case-act-btn" id="btnHlBase" onclick="toggleCaseHighlight('base')">
+              🔴 Выделить основание
+            </button>
+            <button class="case-act-btn" id="btnHlAngle" onclick="toggleCaseHighlight('angle')">
+              📐 Показать прямой угол (90°)
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Task 2 from Textbook (Triangle EFG with 3 heights) -->
+        <div class="theory-panel">
+          <div class="card task2-box">
+            <div class="task2-badge">РАЗБОР ЗАДАНИЯ №2 СО СТР. 92 УЧЕБНИКА</div>
+            <h3>В треугольнике △EFG можно провести 3 высоты!</h3>
+            <p>У любого треугольника 3 стороны-основания, поэтому к каждому основанию можно опустить свою высоту:</p>
+
+            <div class="three-heights-picker">
+              <button class="th-btn active" onclick="showEFGHeight('EG')">
+                <strong>1. Основание EG</strong>
+                <span>Противолежащая вершина: F ➔ Высота FH (FH ⊥ EG)</span>
+              </button>
+              <button class="th-btn" onclick="showEFGHeight('EF')">
+                <strong>2. Основание EF</strong>
+                <span>Противолежащая вершина: G ➔ Высота GJ (GJ ⊥ EF)</span>
+              </button>
+              <button class="th-btn" onclick="showEFGHeight('FG')">
+                <strong>3. Основание FG (Вопрос девочки!)</strong>
+                <span>Противолежащая вершина: E ➔ Высота отрезок EK (EK ⊥ FG)</span>
+              </button>
+            </div>
+
+            <div class="dialog-bubble" id="efgDialogBubble">
+              <span class="dialog-avatar">👧</span>
+              <div class="dialog-content">
+                <strong>Ответ на вопрос девочки в учебнике:</strong>
+                «Если основанием является сторона <strong>FG</strong>, то противолежащая вершина — <strong>E</strong>, а высота — отрезок <strong>EK</strong> (так как EK ⊥ FG)!»
+              </div>
+            </div>
+          </div>
+
+          <div class="step-nav-footer">
+            <button class="prev-step-btn" onclick="switchStep('step1')">
+              ⬅ Назад (Шаг 1)
+            </button>
+            <button class="notebook-action-btn" onclick="openNotebookModal(2)">
+              ✍️ В тетрадь Блок #2 (~9 мин)
+            </button>
+            <button class="next-step-btn" onclick="switchStep('step3')">
+              Вперёд к Шагу 3 ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. STEP 3: SET SQUARE & FORMULAS (22-32 MIN) -->
+    <section class="stage-section" id="sec-step3">
+      <div class="section-header-row">
+        <div class="section-title-wrap">
+          <span class="step-pill">ШАГ 3 ИЗ 4 (22–32 МИН)</span>
+          <h2>Как проверять высоту угольником + Площадь (S) и Периметр (P)</h2>
+        </div>
+        <button class="notebook-quick-btn" onclick="openNotebookModal(2)">
+          ✍️ Формулы для тетради #2
+        </button>
+      </div>
+
+      <div class="two-col-grid">
+        <!-- Left: Interactive Set Square Tool (Линейка-угольник) -->
+        <div class="card interactive-panel">
+          <div class="panel-header">
+            <h4>📐 Проверка высоты прямоугольным угольником:</h4>
+            <span class="panel-tag">2 строгих правила проверки</span>
+          </div>
+
+          <div class="set-square-rules">
+            <div class="ss-rule-box">
+              <span class="ss-rule-num">1</span>
+              <div>
+                <strong>Прямой угол (90°) к основанию:</strong>
+                Одна сторона прямого угла угольника лежит строго вдоль основания (или его продолжения), а вторая — вдоль высоты.
+              </div>
+            </div>
+            <div class="ss-rule-box">
+              <span class="ss-rule-num">2</span>
+              <div>
+                <strong>Противолежащая вершина:</strong>
+                Высота обязана выходить строго из противолежащей вершины этого основания!
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Triangle with moveable Set Square -->
+          <div class="svg-stage">
+            <svg id="rulerSvg" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <pattern id="gridPatternRuler" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#gridPatternRuler)" rx="16" />
+              <g id="rulerSvgGroup"></g>
+            </svg>
+          </div>
+
+          <div class="ruler-actions-row">
+            <button class="ruler-btn active" id="btnRulerApply" onclick="applySetSquare()">
+              📐 Приложить угольник к основанию и высоте!
+            </button>
+            <button class="ruler-btn" id="btnRulerHide" onclick="hideSetSquare()">
+              Скрыть угольник
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Formulas of Perimeter & Area (Rectangle / 2) -->
+        <div class="theory-panel">
+          <!-- Area Visual Explanation Card -->
+          <div class="card formula-main-card">
+            <h3>🟩 Почему площадь треугольника: S = (a · h) : 2?</h3>
+            <p>
+              Потому что любой треугольник с основанием <span class="math-hl">a</span> и высотой <span class="math-hl">h</span> составляет <strong>ровно половину прямоугольника</strong> со сторонами <span class="math-hl">a</span> и <span class="math-hl">h</span>!
+            </p>
+
+            <div class="area-visual-box">
+              <svg id="areaHalfSvg" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+
+            <div class="formula-chips-group">
+              <div class="f-card-big">
+                <span class="f-card-label">ПЛОЩАДЬ ТРЕУГОЛЬНИКА</span>
+                <div class="f-card-math">S = (a · h) : 2</div>
+                <span class="f-card-sub">половина произведения основания на высоту</span>
+              </div>
+              <div class="f-card-big p-card">
+                <span class="f-card-label">ПЕРИМЕТР ТРЕУГОЛЬНИКА</span>
+                <div class="f-card-math">P = a + b + c</div>
+                <span class="f-card-sub">сумма всех трёх сторон («забор»)</span>
+              </div>
+            </div>
+
+            <!-- Reverse Area Formulas -->
+            <div class="reverse-formulas-card">
+              <h5>🔍 Обратные формулы (как найти неизвестную высоту или основание):</h5>
+              <div class="reverse-chips-row">
+                <div class="rev-chip">
+                  Высота: <strong>h = (2 · S) : a</strong>
+                </div>
+                <div class="rev-chip">
+                  Основание: <strong>a = (2 · S) : h</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-nav-footer">
+            <button class="prev-step-btn" onclick="switchStep('step2')">
+              ⬅ Назад (Шаг 2)
+            </button>
+            <button class="next-step-btn" onclick="switchStep('step4')">
+              Перейти к Практикуму (Шаг 4) ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. STEP 4: WORKBOOK PRACTICE & TRAPS (32-45 MIN) -->
+    <section class="stage-section" id="sec-step4">
+      <div class="section-header-row">
+        <div class="section-title-wrap">
+          <span class="step-pill">ШАГ 4 ИЗ 4 (32–45 МИН)</span>
+          <h2>Практикум: Разбор заданий из учебника и рабочей тетради</h2>
+        </div>
+        <button class="notebook-quick-btn" onclick="openNotebookModal(3)">
+          ✍️ Запись в тетрадь #3 (Задачи, ~5 мин)
+        </button>
+      </div>
+
+      <!-- Practice Navigation Tabs -->
+      <div class="practice-tabs-bar">
+        <button class="prac-tab active" id="tabPrac1" onclick="switchPracTab(1)">
+          1. Вопрос: «Может ли отрезок BD быть высотой?» (Скриншот 3)
+        </button>
+        <button class="prac-tab" id="tabPrac2" onclick="switchPracTab(2)">
+          2. Карточки рабочей тетради (Скриншоты 4 и 5 с ловушками)
+        </button>
+        <button class="prac-tab" id="tabPrac3" onclick="switchPracTab(3)">
+          3. Задачи на площадь по клеточкам (Блок 3)
+        </button>
+      </div>
+
+      <!-- VIEW 1: Can BD be height? -->
+      <div class="prac-view active" id="pracView1">
+        <div class="card prac-card">
+          <div class="prac-header">
+            <span class="prac-badge">СКРИНШОТ 3 • ЗАДАНИЕ №1</span>
+            <h3>Может ли отрезок BD быть высотой треугольника ABC, если AC — его основание?</h3>
+          </div>
+
+          <div class="cases-split-grid">
+            <!-- Subcase 1a -->
+            <div class="subcase-box card">
+              <div class="subcase-top">
+                <span class="subcase-tag">РИСУНОК 1a</span>
+                <h4>Тупоугольный треугольник ABC</h4>
+              </div>
+              <div class="subcase-visual">
+                <svg id="svgSub1a" viewBox="0 0 360 200" preserveAspectRatio="xMidYMid meet"></svg>
+              </div>
+              <div class="subcase-question">
+                <strong>Вопрос:</strong> Является ли отрезок BD высотой к основанию AC?
+              </div>
+              <div class="subcase-answer-box">
+                <button class="reveal-ans-pill" onclick="revealSubcaseAns('1a')">
+                  👁️ Показать обоснование ответа
+                </button>
+                <div class="subcase-explanation" id="subAns1a">
+                  <div class="ans-badge green">ОТВЕТ: ДА, МОЖЕТ!</div>
+                  <p>
+                    <strong>Обоснование:</strong> Угол ∠C тупой. Отрезок BD проведён из противолежащей вершины B перпендикулярно (под прямым углом 90°) к <strong>пунктирному продолжению основания AC</strong> (BD ⊥ AD). Высота тупоугольного треугольника <em>может лежать снаружи</em>!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subcase 1b -->
+            <div class="subcase-box card">
+              <div class="subcase-top">
+                <span class="subcase-tag">РИСУНОК 1b</span>
+                <h4>Основание расположено сверху!</h4>
+              </div>
+              <div class="subcase-visual">
+                <svg id="svgSub1b" viewBox="0 0 360 200" preserveAspectRatio="xMidYMid meet"></svg>
+              </div>
+              <div class="subcase-question">
+                <strong>Вопрос:</strong> Может ли высота идти снизу вверх к верхнему основанию?
+              </div>
+              <div class="subcase-answer-box">
+                <button class="reveal-ans-pill" onclick="revealSubcaseAns('1b')">
+                  👁️ Показать обоснование ответа
+                </button>
+                <div class="subcase-explanation" id="subAns1b">
+                  <div class="ans-badge green">ОТВЕТ: ДА, МОЖЕТ!</div>
+                  <p>
+                    <strong>Обоснование:</strong> Основание AC расположено сверху, а отрезок BD опущен к нему из противолежащей нижней вершины B под прямым углом 90° (BD ⊥ AC). <em>Положение треугольника на листе не меняет свойства высоты!</em>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Interactive Workbook Cards (Scr 4 & 5) -->
+      <div class="prac-view" id="pracView2">
+        <div class="card prac-card">
+          <div class="prac-header">
+            <span class="prac-badge">СКРИНШОТЫ 4 И 5 ИЗ РАБОЧЕЙ ТЕТРАДИ</span>
+            <h3>Интерактивные карточки: заполни пропуски у доски</h3>
+            <p>Вызовите ученика к доске. Он должен нажать на правильный вариант ответа!</p>
+          </div>
+
+          <div class="workbook-cards-grid">
+            <!-- Card 1 -->
+            <div class="wb-card" id="wbCard1">
+              <div class="wb-top">
+                <span class="wb-num">№1 a</span>
+                <strong>В треугольнике △ABC:</strong>
+              </div>
+              <div class="wb-condition">AB — основание, <span class="wb-slot" id="slot1">?</span> — высота</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(1, 'BC', true)">BC (или CB)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(1, 'AC', false)">AC</button>
+              </div>
+              <div class="wb-hint" id="wbHint1"></div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="wb-card" id="wbCard2">
+              <div class="wb-top">
+                <span class="wb-num">№1 b</span>
+                <strong>В треугольнике △DEF:</strong>
+              </div>
+              <div class="wb-condition">DF — основание, <span class="wb-slot" id="slot2">?</span> — высота</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(2, 'EG', true)">EG (или GE)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(2, 'EF', false)">EF</button>
+              </div>
+              <div class="wb-hint" id="wbHint2"></div>
+            </div>
+
+            <!-- Card 3: TRAP -->
+            <div class="wb-card trap-border" id="wbCard3">
+              <div class="wb-top">
+                <span class="wb-num">№1 c ⚠️ ЛОВУШКА</span>
+                <strong>В треугольнике △PQR:</strong>
+              </div>
+              <div class="wb-condition">PQ — основание, <span class="wb-slot" id="slot3">?</span> — высота</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(3, 'RS', true)">RS (или SR)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(3, 'QT', false)">QT (ловушка!)</button>
+              </div>
+              <div class="wb-hint" id="wbHint3"></div>
+            </div>
+
+            <!-- Card 4: TRAP -->
+            <div class="wb-card trap-border" id="wbCard4">
+              <div class="wb-top">
+                <span class="wb-num">№1 d ⚠️ ЛОВУШКА</span>
+                <strong>В треугольнике △KLM:</strong>
+              </div>
+              <div class="wb-condition">LM — основание, <span class="wb-slot" id="slot4">?</span> — высота</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(4, 'KN', true)">KN (или NK)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(4, 'LP', false)">LP (ловушка!)</button>
+              </div>
+              <div class="wb-hint" id="wbHint4"></div>
+            </div>
+
+            <!-- Card 5 (From Scr 5) -->
+            <div class="wb-card" id="wbCard5">
+              <div class="wb-top">
+                <span class="wb-num">№2 a</span>
+                <strong>В треугольнике △ABC:</strong>
+              </div>
+              <div class="wb-condition">BD — высота, <span class="wb-slot" id="slot5">?</span> — основание</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(5, 'AC', true)">AC (или CA)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(5, 'AB', false)">AB</button>
+              </div>
+              <div class="wb-hint" id="wbHint5"></div>
+            </div>
+
+            <!-- Card 6 (From Scr 5) -->
+            <div class="wb-card" id="wbCard6">
+              <div class="wb-top">
+                <span class="wb-num">№2 b</span>
+                <strong>В треугольнике △EFG:</strong>
+              </div>
+              <div class="wb-condition">FH — высота, <span class="wb-slot" id="slot6">?</span> — основание</div>
+              <div class="wb-options">
+                <button class="wb-opt-btn" onclick="checkWbAnswer(6, 'EG', true)">EG (или GE)</button>
+                <button class="wb-opt-btn" onclick="checkWbAnswer(6, 'FG', false)">FG</button>
+              </div>
+              <div class="wb-hint" id="wbHint6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: 2 Real Notebook Tasks -->
+      <div class="prac-view" id="pracView3">
+        <div class="card prac-card">
+          <div class="prac-header">
+            <span class="prac-badge">ОБРАЗЦЫ РЕШЕНИЯ ЗАДАЧ ДЛЯ ТЕТРАДИ (БЛОК 3)</span>
+            <h3>Решение типовых задач у доски</h3>
+          </div>
+
+          <div class="problems-split-grid">
+            <!-- Task 1 -->
+            <div class="card prob-item-card">
+              <div class="prob-tag">ЗАДАЧА №1 (ВЫЧИСЛЕНИЕ ПО КЛЕТОЧКАМ)</div>
+              <h4>Площадь △ABC и △DEF со стр. 91 учебника</h4>
+              <p class="prob-task-text">
+                Основание <span class="math-hl">a = 4 см</span>, высота <span class="math-hl">h = 3 см</span>. Найдите площадь каждого треугольника.
+              </p>
+              <div class="prob-solve-steps">
+                <div class="step-line"><strong>Дано:</strong> a = 4 см, h = 3 см. <strong>Найти:</strong> S.</div>
+                <div class="step-line"><strong>Решение:</strong> S = (a · h) : 2 = (4 · 3) : 2 = 12 : 2 = <strong>6 (см²)</strong></div>
+                <div class="prob-ans-banner">
+                  <span>Ответ:</span> <strong>S = 6 см²</strong> (у обоих треугольников площадь одинаковая!)
+                </div>
+              </div>
+            </div>
+
+            <!-- Task 2 -->
+            <div class="card prob-item-card">
+              <div class="prob-tag">ЗАДАЧА №2 (ОБРАТНАЯ ЗАДАЧА)</div>
+              <h4>Нахождение неизвестной высоты по площади</h4>
+              <p class="prob-task-text">
+                Площадь треугольника <span class="math-hl">S = 20 см²</span>, а основание <span class="math-hl">a = 8 см</span>. Найдите высоту h, проведённую к этому основанию.
+              </p>
+              <div class="prob-solve-steps">
+                <div class="step-line"><strong>Дано:</strong> S = 20 см², a = 8 см. <strong>Найти:</strong> h.</div>
+                <div class="step-line"><strong>Формула:</strong> h = (2 · S) : a = (2 · 20) : 8 = 40 : 8 = <strong>5 (см)</strong></div>
+                <div class="prob-ans-banner">
+                  <span>Ответ:</span> <strong>высота h = 5 см</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav-footer">
+        <button class="prev-step-btn" onclick="switchStep('step3')">
+          ⬅ Назад (Шаг 3)
+        </button>
+        <button class="notebook-action-btn" onclick="openNotebookModal(3)">
+          ✍️ Открыть запись в тетрадь #3
+        </button>
+        <button class="quiz-launch-btn" onclick="switchStep('quiz')">
+          🏆 Проверить класс в Квизе! ➔
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. FINAL INTERACTIVE WHITEBOARD QUIZ -->
+    <section class="stage-section" id="sec-quiz">
+      <div class="quiz-container">
+        <div class="quiz-header card">
+          <div class="quiz-title-wrap">
+            <span class="quiz-badge">СУПЕР-ТРЕНАЖЁР У ДОСКИ</span>
+            <h2>Блиц-опрос: Основание и высота треугольника</h2>
+          </div>
+          <div class="quiz-scoreboard">
+            <div class="score-item">
+              <span class="sc-label">Вопрос:</span>
+              <strong id="quizQIndex">1 / 5</strong>
+            </div>
+            <div class="score-item highlight">
+              <span class="sc-label">Правильно:</span>
+              <strong id="quizScore">0 ⭐</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Question Box -->
+        <div class="quiz-body card" id="quizBody">
+          <div class="question-title" id="quizQuestionText">
+            Загрузка вопроса...
+          </div>
+
+          <div class="options-grid" id="quizOptionsGrid">
+            <!-- Options buttons created dynamically -->
+          </div>
+
+          <div class="quiz-feedback-bar" id="quizFeedbackBar">
+            <span class="feedback-icon" id="feedbackIcon">🎉</span>
+            <span class="feedback-msg" id="feedbackMsg">Молодец! Отлично!</span>
+            <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuizQuestion()">
+              Следующий вопрос ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- Quiz Finish View (Confetti celebration) -->
+        <div class="quiz-finish-card card" id="quizFinishCard" style="display: none;">
+          <div class="trophy-emoji">🏆</div>
+          <h2>Тема «Основание и высота» усвоена на отлично!</h2>
+          <p id="quizFinalSummary">Вы правильно ответили на 5 из 5 вопросов!</p>
+          <div class="quiz-restart-row">
+            <button class="primary-big-btn" onclick="restartQuiz()">
+              🔄 Пройти квиз ещё раз
+            </button>
+            <button class="secondary-btn" onclick="switchStep('step4')">
+              📝 Вернуться к практикуму
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NOTEBOOK MODAL ("Запиши в тетрадь" в клеточку) -->
+  <div class="notebook-modal" id="notebookModal">
+    <div class="notebook-sheet card">
+      <div class="notebook-header">
+        <div class="notebook-title-row">
+          <span class="nb-icon">✍️</span>
+          <div>
+            <h3 id="nbTitle">Блок 1 — Элементы треугольника и основание</h3>
+            <span class="nb-sub" id="nbTime">Время на запись: ~8 минут</span>
+          </div>
+        </div>
+        <div class="nb-actions">
+          <button class="nb-timer-start-btn" id="nbTimerStartBtn" onclick="startNotebookCountdown()">
+            ⏱️ Запустить таймер записи
+          </button>
+          <button class="close-nb-btn" onclick="closeNotebookModal()">✕ Закрыть</button>
+        </div>
+      </div>
+
+      <!-- Squared Notebook Paper Area -->
+      <div class="squared-paper" id="squaredPaper">
+        <div class="notebook-margin-line"></div>
+        <div class="notebook-content" id="notebookContent">
+          <!-- Populated dynamically per block -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
