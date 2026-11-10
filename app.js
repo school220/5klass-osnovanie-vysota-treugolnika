@@ -1,10 +1,13 @@
 /**
+ * =============================================================================
  * 5th Grade Mathematics: Interactive Smartboard Web Application
  * Topic: Triangle Base and Height (Основание и высота треугольника)
+ * Optimized for High-Resolution Touch Smartboards (Zero-lag, 60fps, Kid-Friendly)
+ * =============================================================================
  */
 
 // =============================================================================
-// 1. AUDIO SYNTHESIZER (Web Audio API - Works 100% Offline)
+// 1. AUDIO SYNTHESIZER (Web Audio API - 100% Offline, Zero Network Delay)
 // =============================================================================
 class SoundFX {
   constructor() {
@@ -49,9 +52,9 @@ class SoundFX {
   playSuccess() {
     if (!this.enabled) return;
     this.init();
-    const notes = [523.25, 659.25, 783.99, 1046.50];
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
     notes.forEach((freq, idx) => {
-      setTimeout(() => this.playTone(freq, 'triangle', 0.22, 0.15), idx * 80);
+      setTimeout(() => this.playTone(freq, 'triangle', 0.22, 0.15), idx * 75);
     });
   }
 
@@ -73,7 +76,7 @@ class SoundFX {
     if (!this.enabled) return;
     this.init();
     [784, 659, 587, 523].forEach((f, i) => {
-      setTimeout(() => this.playTone(f, 'sine', 0.5, 0.2), i * 200);
+      setTimeout(() => this.playTone(f, 'sine', 0.45, 0.18), i * 180);
     });
   }
 }
@@ -81,29 +84,33 @@ class SoundFX {
 const sfx = new SoundFX();
 
 // =============================================================================
-// 2. CONFETTI CANNON (Optimized for 60fps)
+// 2. CONFETTI CANNON (Lightweight & Hardware-Accelerated)
 // =============================================================================
 class ConfettiCannon {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
     this.particles = [];
     this.running = false;
-    this.resize();
-    window.addEventListener('resize', () => this.resize());
+    if (this.canvas) {
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+    }
   }
 
   resize() {
+    if (!this.canvas) return;
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
 
-  fire(count = 45) {
+  fire(count = 50) {
+    if (!this.canvas) return;
     const colors = ['#dc2626', '#2563eb', '#f59e0b', '#10b981', '#8b5cf6', '#06b6d4'];
     for (let i = 0; i < count; i++) {
       this.particles.push({
         x: this.canvas.width * (0.2 + Math.random() * 0.6),
-        y: this.canvas.height * 0.4 + (Math.random() * 50 - 25),
+        y: this.canvas.height * 0.45 + (Math.random() * 40 - 20),
         vx: (Math.random() - 0.5) * 16,
         vy: -Math.random() * 14 - 4,
         color: colors[Math.floor(Math.random() * colors.length)],
@@ -122,6 +129,7 @@ class ConfettiCannon {
   }
 
   animate() {
+    if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
@@ -141,7 +149,7 @@ class ConfettiCannon {
       this.ctx.rotate((p.rotation * Math.PI) / 180);
       this.ctx.fillStyle = p.color;
       this.ctx.globalAlpha = Math.max(0, p.alpha);
-      this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
       this.ctx.restore();
     }
 
@@ -163,6 +171,7 @@ class WhiteboardPen {
   constructor() {
     this.overlay = document.getElementById('drawingOverlay');
     this.canvas = document.getElementById('drawingCanvas');
+    if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
     this.isDrawing = false;
     this.color = '#f59e0b';
@@ -178,6 +187,7 @@ class WhiteboardPen {
   }
 
   initCanvasSize() {
+    if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
     this.canvas.width = Math.round(rect.width * dpr);
@@ -191,15 +201,17 @@ class WhiteboardPen {
     const clearBtn = document.getElementById('clearCanvasBtn');
     const eraserBtn = document.getElementById('eraserBtn');
 
-    penToggleBtn.addEventListener('click', () => this.toggle());
-    closePenBtn.addEventListener('click', () => this.deactivate());
-    clearBtn.addEventListener('click', () => this.clear());
+    if (penToggleBtn) penToggleBtn.addEventListener('click', () => this.toggle());
+    if (closePenBtn) closePenBtn.addEventListener('click', () => this.deactivate());
+    if (clearBtn) clearBtn.addEventListener('click', () => this.clear());
 
-    eraserBtn.addEventListener('click', () => {
-      this.isEraser = !this.isEraser;
-      eraserBtn.classList.toggle('active', this.isEraser);
-      sfx.playClick();
-    });
+    if (eraserBtn) {
+      eraserBtn.addEventListener('click', () => {
+        this.isEraser = !this.isEraser;
+        eraserBtn.classList.toggle('active', this.isEraser);
+        sfx.playClick();
+      });
+    }
 
     document.querySelectorAll('.color-dot').forEach(dot => {
       dot.addEventListener('click', () => {
@@ -207,7 +219,7 @@ class WhiteboardPen {
         dot.classList.add('active');
         this.color = dot.getAttribute('data-color');
         this.isEraser = false;
-        eraserBtn.classList.remove('active');
+        if (eraserBtn) eraserBtn.classList.remove('active');
         sfx.playClick();
       });
     });
@@ -287,19 +299,22 @@ class WhiteboardPen {
 
   activate() {
     this.active = true;
-    this.overlay.classList.add('active');
-    document.getElementById('penToggleBtn').classList.add('active');
+    if (this.overlay) this.overlay.classList.add('active');
+    const btn = document.getElementById('penToggleBtn');
+    if (btn) btn.classList.add('active');
     sfx.playClick();
   }
 
   deactivate() {
     this.active = false;
-    this.overlay.classList.remove('active');
-    document.getElementById('penToggleBtn').classList.remove('active');
+    if (this.overlay) this.overlay.classList.remove('active');
+    const btn = document.getElementById('penToggleBtn');
+    if (btn) btn.classList.remove('active');
     sfx.playClick();
   }
 
   clear() {
+    if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     sfx.playPop();
   }
@@ -328,27 +343,34 @@ class LessonTimer {
   }
 
   bindEvents() {
-    this.displayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.dropdown.classList.toggle('show');
-      sfx.playClick();
-    });
+    if (this.displayBtn && this.dropdown) {
+      this.displayBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.dropdown.classList.toggle('show');
+        sfx.playClick();
+      });
 
-    document.addEventListener('click', (e) => {
-      if (!document.getElementById('timerWidget').contains(e.target)) {
-        this.dropdown.classList.remove('show');
-      }
-    });
+      document.addEventListener('click', (e) => {
+        const widget = document.getElementById('timerWidget');
+        if (widget && !widget.contains(e.target)) {
+          this.dropdown.classList.remove('show');
+        }
+      });
+    }
 
-    this.toggleBtn.addEventListener('click', () => {
-      this.isRunning ? this.pause() : this.start();
-      sfx.playClick();
-    });
+    if (this.toggleBtn) {
+      this.toggleBtn.addEventListener('click', () => {
+        this.isRunning ? this.pause() : this.start();
+        sfx.playClick();
+      });
+    }
 
-    this.resetBtn.addEventListener('click', () => {
-      this.reset();
-      sfx.playPop();
-    });
+    if (this.resetBtn) {
+      this.resetBtn.addEventListener('click', () => {
+        this.reset();
+        sfx.playPop();
+      });
+    }
 
     document.querySelectorAll('.preset-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -371,10 +393,12 @@ class LessonTimer {
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
-    this.toggleBtn.textContent = '⏸ Пауза';
-    this.toggleBtn.classList.remove('play');
-    this.toggleBtn.classList.add('pause');
-    this.displayBtn.classList.add('running');
+    if (this.toggleBtn) {
+      this.toggleBtn.textContent = '⏸ Пауза';
+      this.toggleBtn.classList.remove('play');
+      this.toggleBtn.classList.add('pause');
+    }
+    if (this.displayBtn) this.displayBtn.classList.add('running');
 
     this.timerId = setInterval(() => {
       if (this.totalSeconds > 0) {
@@ -392,10 +416,12 @@ class LessonTimer {
   pause() {
     this.isRunning = false;
     clearInterval(this.timerId);
-    this.toggleBtn.textContent = '▶ Старт';
-    this.toggleBtn.classList.remove('pause');
-    this.toggleBtn.classList.add('play');
-    this.displayBtn.classList.remove('running');
+    if (this.toggleBtn) {
+      this.toggleBtn.textContent = '▶ Старт';
+      this.toggleBtn.classList.remove('pause');
+      this.toggleBtn.classList.add('play');
+    }
+    if (this.displayBtn) this.displayBtn.classList.remove('running');
   }
 
   reset() {
@@ -405,6 +431,7 @@ class LessonTimer {
   }
 
   render() {
+    if (!this.display) return;
     const mins = Math.floor(this.totalSeconds / 60);
     const secs = this.totalSeconds % 60;
     this.display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
@@ -414,13 +441,15 @@ class LessonTimer {
 const lessonTimer = new LessonTimer();
 
 // =============================================================================
-// 5. STEP NAVIGATION & FULLSCREEN
+// 5. GLOBAL STEP NAVIGATION & UTILITIES
 // =============================================================================
 function switchStep(stepId) {
+  // Update header navigation buttons
   document.querySelectorAll('.step-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-step') === stepId);
   });
 
+  // Switch active stage section
   document.querySelectorAll('.stage-section').forEach(sec => {
     sec.classList.remove('active');
   });
@@ -430,139 +459,174 @@ function switchStep(stepId) {
     targetSec.classList.add('active');
   }
 
-  document.querySelector('.lesson-stage').scrollTo({ top: 0, behavior: 'smooth' });
+  const stage = document.querySelector('.lesson-stage');
+  if (stage) stage.scrollTo({ top: 0, behavior: 'smooth' });
   sfx.playClick();
 
+  // Lazy render graphics for that step
   if (stepId === 'step1') {
-    renderTriangleBaseSvg();
+    renderStep1Svg();
   } else if (stepId === 'step2') {
-    renderCaseSvg();
+    renderStep2Svg();
   } else if (stepId === 'step3') {
-    renderRulerSvg();
-    renderAreaHalfSvg();
+    renderStep3RulerSvg();
+    renderStep3AreaSvg();
   } else if (stepId === 'step4') {
-    renderPracticeSubcases();
+    renderStep4SVGs();
   }
 }
 window.switchStep = switchStep;
 
+// Header Nav Click Listeners
 document.querySelectorAll('.step-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const step = btn.getAttribute('data-step');
-    switchStep(step);
+    if (step) switchStep(step);
   });
 });
 
 // Sound Toggle
 const soundToggleBtn = document.getElementById('soundToggleBtn');
 const soundIcon = document.getElementById('soundIcon');
-soundToggleBtn.addEventListener('click', () => {
-  const enabled = sfx.toggle();
-  soundIcon.textContent = enabled ? '🔊' : '🔇';
-  soundToggleBtn.style.opacity = enabled ? '1' : '0.6';
-});
+if (soundToggleBtn && soundIcon) {
+  soundToggleBtn.addEventListener('click', () => {
+    const enabled = sfx.toggle();
+    soundIcon.textContent = enabled ? '🔊' : '🔇';
+    soundToggleBtn.style.opacity = enabled ? '1' : '0.6';
+  });
+}
 
 // Fullscreen Toggle
 const fullscreenBtn = document.getElementById('fullscreenBtn');
-fullscreenBtn.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => console.warn(err));
-  } else {
-    document.exitFullscreen();
-  }
-  sfx.playClick();
-});
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => console.warn(err));
+    } else {
+      document.exitFullscreen();
+    }
+    sfx.playClick();
+  });
+}
 
 // =============================================================================
-// 6. STEP 1: INTERACTIVE TRIANGLE WITH ANY BASE SELECTION
+// 6. STEP 1: WHAT IS A BASE? (0–10 MIN)
 // =============================================================================
-let currentTriangleBase = 'BC'; // 'BC', 'AC', 'AB'
+let s1CurrentBase = 'BC'; // 'BC', 'AC', 'AB'
 
-function setTriangleBase(baseName) {
-  currentTriangleBase = baseName;
-  document.getElementById('btnBaseBC').classList.toggle('active', baseName === 'BC');
-  document.getElementById('btnBaseAC').classList.toggle('active', baseName === 'AC');
-  document.getElementById('btnBaseAB').classList.toggle('active', baseName === 'AB');
+function setStep1Base(baseName) {
+  s1CurrentBase = baseName;
 
-  const tag = document.getElementById('currentBaseTag');
+  // Toggle button active state
+  ['BC', 'AC', 'AB'].forEach(b => {
+    const btn = document.getElementById(`btnS1${b}`);
+    if (btn) btn.classList.toggle('active', b === baseName);
+  });
+
+  // Update Status Pill
+  const label = document.getElementById('s1ActiveBaseLabel');
+  const tip = document.getElementById('s1VertexTip');
+
   if (baseName === 'BC') {
-    tag.textContent = 'Основание: сторона BC (красная) ➔ Вершина A напротив';
+    if (label) label.textContent = 'Основание: сторона BC (нижняя) ➔ Вершина A напротив';
+    if (tip) tip.innerHTML = '🎯 <strong>Противолежащая вершина:</strong> Напротив стороны <strong>BC</strong> лежит вершина <strong>A</strong>! Из неё опускается высота <strong>AH ⊥ BC</strong>!';
   } else if (baseName === 'AC') {
-    tag.textContent = 'Основание: сторона AC (красная) ➔ Вершина B напротив';
+    if (label) label.textContent = 'Основание: сторона AC (правая боковая) ➔ Вершина B напротив';
+    if (tip) tip.innerHTML = '🎯 <strong>Противолежащая вершина:</strong> Напротив стороны <strong>AC</strong> лежит вершина <strong>B</strong>! Из неё опускается высота <strong>BH ⊥ AC</strong>!';
   } else {
-    tag.textContent = 'Основание: сторона AB (красная) ➔ Вершина C напротив';
+    if (label) label.textContent = 'Основание: сторона AB (левая боковая) ➔ Вершина C напротив';
+    if (tip) tip.innerHTML = '🎯 <strong>Противолежащая вершина:</strong> Напротив стороны <strong>AB</strong> лежит вершина <strong>C</strong>! Из неё опускается высота <strong>CH ⊥ AB</strong>!';
   }
 
   sfx.playPop();
-  renderTriangleBaseSvg();
+  renderStep1Svg();
 }
-window.setTriangleBase = setTriangleBase;
+window.setStep1Base = setStep1Base;
+window.setTriangleBase = setStep1Base; // alias
 
-function renderTriangleBaseSvg() {
-  const group = document.getElementById('triangleSvgGroup');
-  if (!group) return;
-  group.innerHTML = '';
+function setTriType(type) {
+  document.querySelectorAll('.tt-item').forEach(item => item.classList.remove('active'));
+  const map = { acute: 'ttAcute', right: 'ttRight', obtuse: 'ttObtuse' };
+  const el = document.getElementById(map[type]);
+  if (el) el.classList.add('active');
+  sfx.playClick();
+}
+window.setTriType = setTriType;
 
-  // Vertices of triangle ABC
-  const A = { x: 300, y: 60, label: 'A' };
-  const B = { x: 120, y: 280, label: 'B' };
-  const C = { x: 480, y: 280, label: 'C' };
+function renderStep1Svg() {
+  const g = document.getElementById('s1SvgContent') || document.getElementById('triangleSvgGroup');
+  if (!g) return;
+  g.innerHTML = '';
 
-  // Fill triangle background
-  const fillPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-  fillPoly.setAttribute('points', `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`);
-  fillPoly.setAttribute('fill', '#eff6ff');
-  group.appendChild(fillPoly);
+  // Triangle ABC coordinates on grid
+  // Grid: 620 x 360
+  const A = { x: 280, y: 55, label: 'A' };
+  const B = { x: 90,  y: 290, label: 'B' };
+  const C = { x: 530, y: 290, label: 'C' };
 
-  // Helper for sides
-  const drawSide = (p1, p2, isBase, label) => {
+  // Shaded polygon
+  const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  poly.setAttribute('points', `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`);
+  poly.setAttribute('fill', '#eff6ff');
+  poly.setAttribute('stroke', '#cbd5e1');
+  poly.setAttribute('stroke-width', '2');
+  g.appendChild(poly);
+
+  // Helper for drawing sides
+  const drawSide = (p1, p2, name, isBase) => {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', p1.x);
     line.setAttribute('y1', p1.y);
     line.setAttribute('x2', p2.x);
     line.setAttribute('y2', p2.y);
     line.setAttribute('stroke', isBase ? '#dc2626' : '#2563eb');
-    line.setAttribute('stroke-width', isBase ? '6' : '3');
+    line.setAttribute('stroke-width', isBase ? '8' : '3.5');
     line.setAttribute('stroke-linecap', 'round');
-    group.appendChild(line);
+    line.style.cursor = 'pointer';
+    line.addEventListener('click', () => setStep1Base(name));
+    g.appendChild(line);
 
-    // Side label
-    const midX = (p1.x + p2.x) / 2;
-    const midY = (p1.y + p2.y) / 2;
+    // Label
+    const mx = (p1.x + p2.x) / 2;
+    const my = (p1.y + p2.y) / 2;
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', midX + (isBase && p1.y === p2.y ? 0 : (midX < 300 ? -25 : 25)));
-    text.setAttribute('y', midY + (p1.y === p2.y ? 26 : 0));
+    text.setAttribute('x', mx + (isBase && p1.y === p2.y ? 0 : (mx < 280 ? -28 : 28)));
+    text.setAttribute('y', my + (p1.y === p2.y ? 32 : 5));
     text.setAttribute('font-family', 'var(--font-main)');
-    text.setAttribute('font-size', '16');
+    text.setAttribute('font-size', isBase ? '18' : '15');
     text.setAttribute('font-weight', '900');
     text.setAttribute('text-anchor', 'middle');
     text.setAttribute('fill', isBase ? '#dc2626' : '#64748b');
-    text.textContent = isBase ? `${label} (ОСНОВАНИЕ)` : label;
-    group.appendChild(text);
+    text.textContent = isBase ? `ОСНОВАНИЕ ${name}` : `сторона ${name}`;
+    text.style.cursor = 'pointer';
+    text.addEventListener('click', () => setStep1Base(name));
+    g.appendChild(text);
   };
 
-  drawSide(B, C, currentTriangleBase === 'BC', 'BC');
-  drawSide(A, C, currentTriangleBase === 'AC', 'AC');
-  drawSide(A, B, currentTriangleBase === 'AB', 'AB');
+  drawSide(B, C, 'BC', s1CurrentBase === 'BC');
+  drawSide(A, C, 'AC', s1CurrentBase === 'AC');
+  drawSide(A, B, 'AB', s1CurrentBase === 'AB');
 
-  // Height line drop based on selected base
+  // Height and opposite vertex calculation
   let topVertex = A;
-  let hTarget = { x: 300, y: 280 };
+  let hTarget = { x: 280, y: 290 };
   let hName = 'AH';
 
-  if (currentTriangleBase === 'BC') {
+  if (s1CurrentBase === 'BC') {
     topVertex = A;
-    hTarget = { x: 300, y: 280 };
+    hTarget = { x: 280, y: 290 };
     hName = 'AH';
-  } else if (currentTriangleBase === 'AC') {
+  } else if (s1CurrentBase === 'AC') {
     topVertex = B;
-    // Projected perpendicular onto AC
-    hTarget = { x: 380, y: 158 };
+    // Perpendicular from B to AC:
+    // AC line: from (280,55) to (530,290) -> dx=250, dy=235
+    hTarget = { x: 405, y: 172 };
     hName = 'BH';
   } else {
     topVertex = C;
-    // Projected perpendicular onto AB
-    hTarget = { x: 220, y: 158 };
+    // Perpendicular from C to AB:
+    // AB line: from (280,55) to (90,290) -> dx=-190, dy=235
+    hTarget = { x: 195, y: 160 };
     hName = 'CH';
   }
 
@@ -573,126 +637,164 @@ function renderTriangleBaseSvg() {
   hLine.setAttribute('x2', hTarget.x);
   hLine.setAttribute('y2', hTarget.y);
   hLine.setAttribute('stroke', '#047857');
-  hLine.setAttribute('stroke-width', '4');
-  hLine.setAttribute('stroke-dasharray', '6,4');
-  group.appendChild(hLine);
+  hLine.setAttribute('stroke-width', '4.5');
+  hLine.setAttribute('stroke-dasharray', '8,5');
+  hLine.setAttribute('stroke-linecap', 'round');
+  g.appendChild(hLine);
 
   // Height label
-  const hMidX = (topVertex.x + hTarget.x) / 2 + 18;
+  const hMidX = (topVertex.x + hTarget.x) / 2 + (s1CurrentBase === 'BC' ? 18 : 22);
   const hMidY = (topVertex.y + hTarget.y) / 2;
   const hText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   hText.setAttribute('x', hMidX);
   hText.setAttribute('y', hMidY);
   hText.setAttribute('font-family', 'var(--font-mono)');
-  hText.setAttribute('font-size', '16');
+  hText.setAttribute('font-size', '17');
   hText.setAttribute('font-weight', '900');
   hText.setAttribute('fill', '#047857');
   hText.textContent = `Высота h (${hName} ⊥)`;
-  group.appendChild(hText);
+  g.appendChild(hText);
 
-  // 90° right angle marker
-  const rightAngle = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  rightAngle.setAttribute('x', hTarget.x - (currentTriangleBase === 'BC' ? 14 : 8));
-  rightAngle.setAttribute('y', hTarget.y - (currentTriangleBase === 'BC' ? 14 : 8));
-  rightAngle.setAttribute('width', '14');
-  rightAngle.setAttribute('height', '14');
-  rightAngle.setAttribute('fill', 'rgba(16, 185, 129, 0.3)');
-  rightAngle.setAttribute('stroke', '#10b981');
-  rightAngle.setAttribute('stroke-width', '2');
-  group.appendChild(rightAngle);
+  // 90° Right Angle Marker
+  const ra = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  ra.setAttribute('x', hTarget.x - (s1CurrentBase === 'BC' ? 16 : 10));
+  ra.setAttribute('y', hTarget.y - (s1CurrentBase === 'BC' ? 16 : 10));
+  ra.setAttribute('width', '16');
+  ra.setAttribute('height', '16');
+  ra.setAttribute('fill', 'rgba(16, 185, 129, 0.3)');
+  ra.setAttribute('stroke', '#10b981');
+  ra.setAttribute('stroke-width', '2.5');
+  g.appendChild(ra);
 
   // Draw Vertices circles
   [A, B, C].forEach(v => {
     const isOpposite = v === topVertex;
+
+    // Pulsing aura for opposite vertex
+    if (isOpposite) {
+      const aura = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      aura.setAttribute('cx', v.x);
+      aura.setAttribute('cy', v.y);
+      aura.setAttribute('r', '18');
+      aura.setAttribute('fill', 'rgba(220, 38, 38, 0.25)');
+      g.appendChild(aura);
+    }
+
     const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     c.setAttribute('cx', v.x);
     c.setAttribute('cy', v.y);
-    c.setAttribute('r', isOpposite ? '10' : '7');
+    c.setAttribute('r', isOpposite ? '11' : '7.5');
     c.setAttribute('fill', isOpposite ? '#dc2626' : '#1e293b');
     c.setAttribute('stroke', '#ffffff');
-    c.setAttribute('stroke-width', '2.5');
-    group.appendChild(c);
+    c.setAttribute('stroke-width', '3');
+    g.appendChild(c);
 
     const l = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    l.setAttribute('x', v.x + (v.x < 300 ? -24 : (v.x === 300 ? 0 : 20)));
-    l.setAttribute('y', v.y + (v.y < 100 ? -12 : 24));
-    l.setAttribute('text-anchor', v.x === 300 ? 'middle' : 'start');
+    l.setAttribute('x', v.x + (v.x < 200 ? -28 : (v.x > 400 ? 28 : 0)));
+    l.setAttribute('y', v.y + (v.y < 100 ? -16 : 28));
+    l.setAttribute('text-anchor', v.x < 200 ? 'end' : (v.x > 400 ? 'start' : 'middle'));
     l.setAttribute('font-family', 'var(--font-mono)');
-    l.setAttribute('font-size', '20');
+    l.setAttribute('font-size', isOpposite ? '21' : '18');
     l.setAttribute('font-weight', '900');
     l.setAttribute('fill', isOpposite ? '#dc2626' : '#0f172a');
-    l.textContent = isOpposite ? `${v.label} (ПРОТИВОЛЕЖАЩАЯ)` : v.label;
-    group.appendChild(l);
+    l.textContent = isOpposite ? `${v.label} (ВЕРШИНА НАПРОТИВ)` : v.label;
+    g.appendChild(l);
   });
 }
 
-function showTriTypeDemo(type) {
-  document.querySelectorAll('.type-mini-card').forEach(c => c.classList.remove('active'));
-  document.getElementById(`tt-${type}`).classList.add('active');
-  sfx.playClick();
-}
-window.showTriTypeDemo = showTriTypeDemo;
-
 // =============================================================================
-// 7. STEP 2: THREE CASES OF HEIGHT (стр. 91-92)
+// 7. STEP 2: THREE CASES OF HEIGHT (10–22 MIN)
 // =============================================================================
-let currentCase = 'a'; // 'a', 'b', 'c'
-let caseHighlight = 'height'; // 'height', 'base', 'angle'
+let s2CurrentCase = 'a'; // 'a', 'b', 'c'
+let s2HlMode = 'height'; // 'height', 'base', 'angle'
 
-function switchHeightCase(caseKey) {
-  currentCase = caseKey;
-  document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`caseTab${caseKey.toUpperCase()}`).classList.add('active');
+function selectCase(caseKey) {
+  s2CurrentCase = caseKey;
 
-  const banner = document.getElementById('caseDescBanner');
-  const title = document.getElementById('caseTitleText');
-  const body = document.getElementById('caseBodyText');
+  // Update tabs
+  ['a', 'b', 'c'].forEach(k => {
+    const btn = document.getElementById(`btnCase${k.toUpperCase()}`);
+    if (btn) btn.classList.toggle('active', k === caseKey);
+  });
+
+  // Descriptions
+  const title = document.getElementById('caseHeadTitle');
+  const desc = document.getElementById('caseHeadDesc');
+  const metaphor = document.getElementById('obtuseMetaphorCard');
 
   if (caseKey === 'a') {
-    title.textContent = 'Случай а: Прямоугольный треугольник △ABC (AC ⊥ BC)';
-    body.textContent = 'Основание BC, противолежащая вершина A. Так как угол ∠C = 90°, сторона AC уже перпендикулярна основанию. Сама боковая сторона AC и есть высота!';
+    if (title) title.textContent = 'Случай а: В прямоугольном △ABC (∠C = 90°)';
+    if (desc) desc.innerHTML = 'Основание — сторона BC. Так как угол ∠C = 90°, сторона AC уже стоит строго под прямым углом! Значит, <strong>сама боковая сторона AC и есть высота</strong> (AC ⊥ BC)!';
+    if (metaphor) metaphor.style.display = 'none';
   } else if (caseKey === 'b') {
-    title.textContent = 'Случай b: Остроугольный треугольник △DEF (DG ⊥ EF)';
-    body.textContent = 'Основание EF, противолежащая вершина D. Опускаем перпендикуляр DG по клеточкам строго вниз на сторону EF. Высота лежит ВНУТРИ треугольника!';
+    if (title) title.textContent = 'Случай b: В остроугольном △DEF (все углы < 90°)';
+    if (desc) desc.innerHTML = 'Основание — сторона EF. Из противолежащей вершины D опускаем перпендикуляр DG прямо на сторону EF. <strong>Высота лежит строго ВНУТРИ треугольника!</strong>';
+    if (metaphor) metaphor.style.display = 'none';
   } else {
-    title.textContent = 'Случай c: Тупоугольный треугольник △WXY (WZ ⊥ XY снаружи!)';
-    body.textContent = 'Основание YX, вершина W «нависает» сбоку. Прямой перпендикуляр не попадает на саму сторону! Поэтому продолжаем сторону YX пунктиром влево (до Z), и высота WZ падает СНАРУЖИ!';
+    if (title) title.textContent = 'Случай c: В тупоугольном △WXY (угол ∠X > 90°)';
+    if (desc) desc.innerHTML = 'Основание — отрезок XY. Вершина W нависает сбоку, и перпендикуляр не попадает на отрезок XY! <strong>Продлеваем основание пунктиром влево, и высота WZ падает СНАРУЖИ!</strong>';
+    if (metaphor) metaphor.style.display = 'block';
   }
 
   sfx.playClick();
-  renderCaseSvg();
+  renderStep2Svg();
 }
-window.switchHeightCase = switchHeightCase;
+window.selectCase = selectCase;
+window.switchHeightCase = selectCase; // alias
 
-function toggleCaseHighlight(feat) {
-  caseHighlight = feat;
-  document.querySelectorAll('.case-act-btn').forEach(b => b.classList.remove('active'));
-  if (feat === 'height') document.getElementById('btnHlHeight').classList.add('active');
-  if (feat === 'base') document.getElementById('btnHlBase').classList.add('active');
-  if (feat === 'angle') document.getElementById('btnHlAngle').classList.add('active');
+function setS2Hl(mode) {
+  s2HlMode = mode;
+  const map = { height: 'btnS2HlHeight', base: 'btnS2HlBase', angle: 'btnS2HlAngle' };
+  ['height', 'base', 'angle'].forEach(m => {
+    const btn = document.getElementById(map[m]);
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
   sfx.playPop();
-  renderCaseSvg();
+  renderStep2Svg();
 }
-window.toggleCaseHighlight = toggleCaseHighlight;
+window.setS2Hl = setS2Hl;
+window.toggleCaseHighlight = setS2Hl; // alias
 
-function renderCaseSvg() {
-  const group = document.getElementById('caseSvgGroup');
-  if (!group) return;
-  group.innerHTML = '';
+function renderStep2Svg() {
+  const g = document.getElementById('s2SvgContent') || document.getElementById('caseSvgGroup');
+  if (!g) return;
+  g.innerHTML = '';
 
-  if (currentCase === 'a') {
-    // Right triangle ABC (C is 90°)
-    const C = { x: 180, y: 280, label: 'C (90°)' };
-    const B = { x: 460, y: 280, label: 'B' };
-    const A = { x: 180, y: 70, label: 'A' };
+  const addLabel = (txt, x, y, col, sz = '17', anchor = 'middle') => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', x);
+    t.setAttribute('y', y);
+    t.setAttribute('font-family', 'var(--font-main)');
+    t.setAttribute('font-size', sz);
+    t.setAttribute('font-weight', '900');
+    t.setAttribute('fill', col);
+    t.setAttribute('text-anchor', anchor);
+    t.textContent = txt;
+    g.appendChild(t);
+  };
 
-    // Fill
+  if (s2CurrentCase === 'a') {
+    // Case a: Right triangle ABC (C is 90°)
+    const C = { x: 170, y: 280, label: 'C' };
+    const B = { x: 490, y: 280, label: 'B' };
+    const A = { x: 170, y: 65,  label: 'A' };
+
     const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     poly.setAttribute('points', `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`);
     poly.setAttribute('fill', '#eff6ff');
     poly.setAttribute('stroke', '#94a3b8');
     poly.setAttribute('stroke-width', '2');
-    group.appendChild(poly);
+    g.appendChild(poly);
+
+    // Hypotenuse AB
+    const abLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    abLine.setAttribute('x1', A.x);
+    abLine.setAttribute('y1', A.y);
+    abLine.setAttribute('x2', B.x);
+    abLine.setAttribute('y2', B.y);
+    abLine.setAttribute('stroke', '#3b82f6');
+    abLine.setAttribute('stroke-width', '3');
+    g.appendChild(abLine);
 
     // Base BC
     const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -701,62 +803,52 @@ function renderCaseSvg() {
     baseLine.setAttribute('x2', B.x);
     baseLine.setAttribute('y2', B.y);
     baseLine.setAttribute('stroke', '#dc2626');
-    baseLine.setAttribute('stroke-width', caseHighlight === 'base' ? '7' : '5');
-    group.appendChild(baseLine);
+    baseLine.setAttribute('stroke-width', s2HlMode === 'base' ? '8' : '5');
+    baseLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(baseLine);
 
-    // Height AC (Side)
+    // Height AC (Side of right angle)
     const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     hLine.setAttribute('x1', A.x);
     hLine.setAttribute('y1', A.y);
     hLine.setAttribute('x2', C.x);
     hLine.setAttribute('y2', C.y);
     hLine.setAttribute('stroke', '#047857');
-    hLine.setAttribute('stroke-width', caseHighlight === 'height' ? '7' : '5');
-    group.appendChild(hLine);
+    hLine.setAttribute('stroke-width', s2HlMode === 'height' ? '8' : '5');
+    hLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(hLine);
 
     // Right angle square
     const ra = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     ra.setAttribute('x', C.x);
-    ra.setAttribute('y', C.y - 18);
-    ra.setAttribute('width', '18');
-    ra.setAttribute('height', '18');
-    ra.setAttribute('fill', 'rgba(16, 185, 129, 0.25)');
-    ra.setAttribute('stroke', '#10b981');
-    ra.setAttribute('stroke-width', '2.5');
-    group.appendChild(ra);
+    ra.setAttribute('y', C.y - 22);
+    ra.setAttribute('width', '22');
+    ra.setAttribute('height', '22');
+    ra.setAttribute('fill', s2HlMode === 'angle' ? 'rgba(245, 158, 11, 0.45)' : 'rgba(16, 185, 129, 0.25)');
+    ra.setAttribute('stroke', s2HlMode === 'angle' ? '#d97706' : '#10b981');
+    ra.setAttribute('stroke-width', '3');
+    g.appendChild(ra);
 
-    // Labels
-    const addLbl = (txt, x, y, col, sz = '17') => {
-      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', x);
-      t.setAttribute('y', y);
-      t.setAttribute('font-family', 'var(--font-main)');
-      t.setAttribute('font-size', sz);
-      t.setAttribute('font-weight', '900');
-      t.setAttribute('fill', col);
-      t.textContent = txt;
-      group.appendChild(t);
-    };
+    addLabel('90°', C.x + 11, C.y - 6, '#047857', '12');
+    addLabel('Основание BC', 330, 312, '#dc2626', '18');
+    addLabel('Боковая сторона AC = ВЫСОТА h', 160, 175, '#047857', '17', 'end');
+    addLabel('A (вершина)', A.x, A.y - 14, '#0f172a', '18');
+    addLabel('B', B.x + 18, B.y + 6, '#0f172a', '18');
+    addLabel('C (90°)', C.x - 18, C.y + 24, '#0f172a', '18');
 
-    addLbl('Основание BC', 320, 310, '#dc2626');
-    addLbl('Боковая сторона AC = ВЫСОТА h', 160, 175, '#047857');
-    addLbl('A', 170, 55, '#0f172a');
-    addLbl('B', 475, 290, '#0f172a');
-    addLbl('C', 155, 305, '#0f172a');
-
-  } else if (currentCase === 'b') {
-    // Acute triangle DEF (Height DG inside)
-    const D = { x: 300, y: 70, label: 'D' };
-    const E = { x: 140, y: 280, label: 'E' };
-    const F = { x: 480, y: 280, label: 'F' };
+  } else if (s2CurrentCase === 'b') {
+    // Case b: Acute triangle DEF
+    const D = { x: 300, y: 65,  label: 'D' };
+    const E = { x: 120, y: 280, label: 'E' };
+    const F = { x: 500, y: 280, label: 'F' };
     const G = { x: 300, y: 280, label: 'G' };
 
     const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     poly.setAttribute('points', `${D.x},${D.y} ${E.x},${E.y} ${F.x},${F.y}`);
     poly.setAttribute('fill', '#eff6ff');
-    poly.setAttribute('stroke', '#2563eb');
+    poly.setAttribute('stroke', '#3b82f6');
     poly.setAttribute('stroke-width', '3');
-    group.appendChild(poly);
+    g.appendChild(poly);
 
     // Base EF
     const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -765,85 +857,76 @@ function renderCaseSvg() {
     baseLine.setAttribute('x2', F.x);
     baseLine.setAttribute('y2', F.y);
     baseLine.setAttribute('stroke', '#dc2626');
-    baseLine.setAttribute('stroke-width', '5');
-    group.appendChild(baseLine);
+    baseLine.setAttribute('stroke-width', s2HlMode === 'base' ? '8' : '5');
+    baseLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(baseLine);
 
-    // Height DG inside
+    // Height DG
     const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     hLine.setAttribute('x1', D.x);
     hLine.setAttribute('y1', D.y);
     hLine.setAttribute('x2', G.x);
     hLine.setAttribute('y2', G.y);
     hLine.setAttribute('stroke', '#047857');
-    hLine.setAttribute('stroke-width', '4');
-    hLine.setAttribute('stroke-dasharray', '6,4');
-    group.appendChild(hLine);
+    hLine.setAttribute('stroke-width', s2HlMode === 'height' ? '7' : '4.5');
+    hLine.setAttribute('stroke-dasharray', '7,4');
+    hLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(hLine);
 
     // Right angle at G
     const ra = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    ra.setAttribute('x', G.x - 16);
-    ra.setAttribute('y', G.y - 16);
-    ra.setAttribute('width', '16');
-    ra.setAttribute('height', '16');
-    ra.setAttribute('fill', 'rgba(16, 185, 129, 0.25)');
-    ra.setAttribute('stroke', '#10b981');
-    ra.setAttribute('stroke-width', '2');
-    group.appendChild(ra);
+    ra.setAttribute('x', G.x - 18);
+    ra.setAttribute('y', G.y - 18);
+    ra.setAttribute('width', '18');
+    ra.setAttribute('height', '18');
+    ra.setAttribute('fill', s2HlMode === 'angle' ? 'rgba(245, 158, 11, 0.45)' : 'rgba(16, 185, 129, 0.25)');
+    ra.setAttribute('stroke', s2HlMode === 'angle' ? '#d97706' : '#10b981');
+    ra.setAttribute('stroke-width', '2.5');
+    g.appendChild(ra);
 
-    const addLbl = (txt, x, y, col, sz = '17') => {
-      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', x);
-      t.setAttribute('y', y);
-      t.setAttribute('font-family', 'var(--font-main)');
-      t.setAttribute('font-size', sz);
-      t.setAttribute('font-weight', '900');
-      t.setAttribute('fill', col);
-      t.textContent = txt;
-      group.appendChild(t);
-    };
-
-    addLbl('Основание EF', 310, 310, '#dc2626');
-    addLbl('Высота DG (ВНУТРИ)', 315, 180, '#047857');
-    addLbl('D', 295, 55, '#0f172a');
-    addLbl('E', 120, 290, '#0f172a');
-    addLbl('F', 495, 290, '#0f172a');
-    addLbl('G', 295, 305, '#047857');
+    addLabel('Основание EF', 310, 315, '#dc2626', '18');
+    addLabel('Высота DG (ВНУТРИ ФИГУРЫ)', 315, 175, '#047857', '17', 'start');
+    addLabel('D', D.x, D.y - 14, '#0f172a', '18');
+    addLabel('E', E.x - 16, E.y + 6, '#0f172a', '18');
+    addLabel('F', F.x + 18, F.y + 6, '#0f172a', '18');
+    addLabel('G (⊥)', G.x, G.y + 24, '#047857', '16');
 
   } else {
-    // Obtuse triangle WXY (Height WZ outside on extension)
-    const W = { x: 150, y: 70, label: 'W' };
-    const Y = { x: 280, y: 280, label: 'Y' };
-    const X = { x: 490, y: 280, label: 'X' };
-    const Z = { x: 150, y: 280, label: 'Z' };
+    // Case c: Obtuse triangle WXY (Height WZ outside)
+    const W = { x: 140, y: 65,  label: 'W' };
+    const X = { x: 260, y: 280, label: 'X' };
+    const Y = { x: 510, y: 280, label: 'Y' };
+    const Z = { x: 140, y: 280, label: 'Z' };
 
-    // Fill triangle
+    // Shaded Triangle
     const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    poly.setAttribute('points', `${W.x},${W.y} ${Y.x},${Y.y} ${X.x},${X.y}`);
+    poly.setAttribute('points', `${W.x},${W.y} ${X.x},${X.y} ${Y.x},${Y.y}`);
     poly.setAttribute('fill', '#eff6ff');
-    poly.setAttribute('stroke', '#2563eb');
+    poly.setAttribute('stroke', '#3b82f6');
     poly.setAttribute('stroke-width', '3');
-    group.appendChild(poly);
+    g.appendChild(poly);
 
-    // Extension dashed line from Y to Z
+    // Extension dashed line from X to Z
     const extLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     extLine.setAttribute('x1', Z.x);
     extLine.setAttribute('y1', Z.y);
-    extLine.setAttribute('x2', Y.x);
-    extLine.setAttribute('y2', Y.y);
+    extLine.setAttribute('x2', X.x);
+    extLine.setAttribute('y2', X.y);
     extLine.setAttribute('stroke', '#ef4444');
-    extLine.setAttribute('stroke-width', '3');
-    extLine.setAttribute('stroke-dasharray', '5,5');
-    group.appendChild(extLine);
+    extLine.setAttribute('stroke-width', '3.5');
+    extLine.setAttribute('stroke-dasharray', '6,5');
+    g.appendChild(extLine);
 
-    // Base YX
+    // Base XY
     const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    baseLine.setAttribute('x1', Y.x);
-    baseLine.setAttribute('y1', Y.y);
-    baseLine.setAttribute('x2', X.x);
-    baseLine.setAttribute('y2', X.y);
+    baseLine.setAttribute('x1', X.x);
+    baseLine.setAttribute('y1', X.y);
+    baseLine.setAttribute('x2', Y.x);
+    baseLine.setAttribute('y2', Y.y);
     baseLine.setAttribute('stroke', '#dc2626');
-    baseLine.setAttribute('stroke-width', '6');
-    group.appendChild(baseLine);
+    baseLine.setAttribute('stroke-width', s2HlMode === 'base' ? '8' : '5');
+    baseLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(baseLine);
 
     // Height WZ outside
     const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -852,9 +935,10 @@ function renderCaseSvg() {
     hLine.setAttribute('x2', Z.x);
     hLine.setAttribute('y2', Z.y);
     hLine.setAttribute('stroke', '#047857');
-    hLine.setAttribute('stroke-width', '5');
-    hLine.setAttribute('stroke-dasharray', '6,4');
-    group.appendChild(hLine);
+    hLine.setAttribute('stroke-width', s2HlMode === 'height' ? '7' : '4.5');
+    hLine.setAttribute('stroke-dasharray', '7,4');
+    hLine.setAttribute('stroke-linecap', 'round');
+    g.appendChild(hLine);
 
     // Right angle at Z
     const ra = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -862,108 +946,108 @@ function renderCaseSvg() {
     ra.setAttribute('y', Z.y - 18);
     ra.setAttribute('width', '18');
     ra.setAttribute('height', '18');
-    ra.setAttribute('fill', 'rgba(16, 185, 129, 0.25)');
-    ra.setAttribute('stroke', '#10b981');
-    ra.setAttribute('stroke-width', '2');
-    group.appendChild(ra);
+    ra.setAttribute('fill', s2HlMode === 'angle' ? 'rgba(245, 158, 11, 0.45)' : 'rgba(16, 185, 129, 0.25)');
+    ra.setAttribute('stroke', s2HlMode === 'angle' ? '#d97706' : '#10b981');
+    ra.setAttribute('stroke-width', '2.5');
+    g.appendChild(ra);
 
-    const addLbl = (txt, x, y, col, sz = '17') => {
-      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', x);
-      t.setAttribute('y', y);
-      t.setAttribute('font-family', 'var(--font-main)');
-      t.setAttribute('font-size', sz);
-      t.setAttribute('font-weight', '900');
-      t.setAttribute('fill', col);
-      t.textContent = txt;
-      group.appendChild(t);
-    };
-
-    addLbl('Основание YX', 380, 310, '#dc2626');
-    addLbl('Продолжение стороны', 160, 310, '#ef4444', '14');
-    addLbl('Высота WZ (СНАРУЖИ!)', 140, 180, '#047857');
-    addLbl('W', 140, 55, '#0f172a');
-    addLbl('Y', 280, 265, '#0f172a');
-    addLbl('X', 505, 290, '#0f172a');
-    addLbl('Z', 130, 295, '#047857');
+    addLabel('Основание XY', 385, 312, '#dc2626', '18');
+    addLabel('Продолжение стороны (пунктир)', 200, 312, '#ef4444', '13');
+    addLabel('Высота WZ (СНАРУЖИ!)', 130, 175, '#047857', '17', 'end');
+    addLabel('W (нависает)', W.x, W.y - 14, '#0f172a', '18');
+    addLabel('X (тупой угол)', X.x, X.y - 14, '#0f172a', '16');
+    addLabel('Y', Y.x + 18, Y.y + 6, '#0f172a', '18');
+    addLabel('Z (точка падения)', Z.x, Z.y + 24, '#047857', '16');
   }
 }
 
-function showEFGHeight(base) {
-  document.querySelectorAll('.th-btn').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+// Task 2 from Textbook Showcase
+function showEFGCase(side) {
+  ['EG', 'EF', 'FG'].forEach(s => {
+    const btn = document.getElementById(`btnEFG_${s}`);
+    if (btn) btn.classList.toggle('active', s === side);
+  });
 
-  const bubble = document.getElementById('efgDialogBubble');
-  if (base === 'FG') {
-    bubble.innerHTML = `
-      <span class="dialog-avatar">👧</span>
-      <div class="dialog-content">
-        <strong>Ответ на вопрос девочки в учебнике:</strong>
-        «Если основанием является сторона <strong>FG</strong>, то противолежащая вершина — <strong>E</strong>, а высота — отрезок <strong>EK</strong> (так как EK ⊥ FG)!»
+  const box = document.getElementById('girlAnswerBox');
+  if (!box) return;
+
+  if (side === 'FG') {
+    box.innerHTML = `
+      <span class="girl-emoji">👧</span>
+      <div class="girl-text">
+        <strong>Ответ на вопрос девочки в учебнике (стр. 92):</strong><br>
+        «Если основание — отрезок <strong>FG</strong>, то противолежащая вершина — <strong>E</strong>, а высота — отрезок <strong>EK</strong> (так как EK ⊥ FG)!»
       </div>
     `;
     sfx.playSuccess();
     confetti.fire(35);
-  } else if (base === 'EG') {
-    bubble.innerHTML = `
-      <span class="dialog-avatar">📐</span>
-      <div class="dialog-content">
-        <strong>Основание EG:</strong> Противолежащая вершина <strong>F</strong>, опускаем перпендикуляр FH ➔ <strong>высота FH ⊥ EG</strong>!
+  } else if (side === 'EG') {
+    box.innerHTML = `
+      <span class="girl-emoji">📐</span>
+      <div class="girl-text">
+        <strong>Случай 1 (Основание EG):</strong> Противолежащая вершина <strong>F</strong> ➔ Опускаем высоту <strong>FH ⊥ EG</strong>!
       </div>
     `;
     sfx.playPop();
   } else {
-    bubble.innerHTML = `
-      <span class="dialog-avatar">📐</span>
-      <div class="dialog-content">
-        <strong>Основание EF:</strong> Противолежащая вершина <strong>G</strong>, опускаем перпендикуляр GJ ➔ <strong>высота GJ ⊥ EF</strong>!
+    box.innerHTML = `
+      <span class="girl-emoji">📐</span>
+      <div class="girl-text">
+        <strong>Случай 2 (Основание EF):</strong> Противолежащая вершина <strong>G</strong> ➔ Опускаем высоту <strong>GJ ⊥ EF</strong>!
       </div>
     `;
     sfx.playPop();
   }
 }
-window.showEFGHeight = showEFGHeight;
+window.showEFGCase = showEFGCase;
+window.showEFGHeight = showEFGCase; // alias
 
 // =============================================================================
-// 8. STEP 3: SET SQUARE & AREA HALF-RECTANGLE
+// 8. STEP 3: SET SQUARE & AREA FORMULA S = (a · h) : 2 (22–32 MIN)
 // =============================================================================
-let setSquareActive = true;
+let s3RulerApplied = true;
 
-function applySetSquare() {
-  setSquareActive = true;
-  document.getElementById('btnRulerApply').classList.add('active');
-  document.getElementById('btnRulerHide').classList.remove('active');
+function animateRulerSlide() {
+  s3RulerApplied = true;
+  const btnApply = document.getElementById('btnRulerSlide') || document.getElementById('btnRulerApply');
+  const btnReset = document.getElementById('btnRulerReset') || document.getElementById('btnRulerHide');
+  if (btnApply) btnApply.classList.add('active');
+  if (btnReset) btnReset.classList.remove('active');
   sfx.playSuccess();
-  renderRulerSvg();
+  renderStep3RulerSvg();
 }
-window.applySetSquare = applySetSquare;
+window.animateRulerSlide = animateRulerSlide;
+window.applySetSquare = animateRulerSlide; // alias
 
-function hideSetSquare() {
-  setSquareActive = false;
-  document.getElementById('btnRulerHide').classList.add('active');
-  document.getElementById('btnRulerApply').classList.remove('active');
+function resetRulerView() {
+  s3RulerApplied = false;
+  const btnApply = document.getElementById('btnRulerSlide') || document.getElementById('btnRulerApply');
+  const btnReset = document.getElementById('btnRulerReset') || document.getElementById('btnRulerHide');
+  if (btnApply) btnApply.classList.remove('active');
+  if (btnReset) btnReset.classList.add('active');
   sfx.playClick();
-  renderRulerSvg();
+  renderStep3RulerSvg();
 }
-window.hideSetSquare = hideSetSquare;
+window.resetRulerView = resetRulerView;
+window.hideSetSquare = resetRulerView; // alias
 
-function renderRulerSvg() {
-  const group = document.getElementById('rulerSvgGroup');
-  if (!group) return;
-  group.innerHTML = '';
+function renderStep3RulerSvg() {
+  const g = document.getElementById('s3RulerSvgContent') || document.getElementById('rulerSvgGroup');
+  if (!g) return;
+  g.innerHTML = '';
 
-  const A = { x: 300, y: 50 };
-  const B = { x: 140, y: 260 };
-  const C = { x: 460, y: 260 };
-  const H = { x: 300, y: 260 };
+  const A = { x: 280, y: 50 };
+  const B = { x: 110, y: 260 };
+  const C = { x: 470, y: 260 };
+  const H = { x: 280, y: 260 };
 
-  // Base Triangle
+  // Base Triangle ABC
   const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   poly.setAttribute('points', `${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`);
   poly.setAttribute('fill', '#eff6ff');
   poly.setAttribute('stroke', '#2563eb');
   poly.setAttribute('stroke-width', '3');
-  group.appendChild(poly);
+  g.appendChild(poly);
 
   // Red base BC
   const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -973,9 +1057,10 @@ function renderRulerSvg() {
   baseLine.setAttribute('y2', C.y);
   baseLine.setAttribute('stroke', '#dc2626');
   baseLine.setAttribute('stroke-width', '6');
-  group.appendChild(baseLine);
+  baseLine.setAttribute('stroke-linecap', 'round');
+  g.appendChild(baseLine);
 
-  // Green Height AH
+  // Height line AH
   const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
   hLine.setAttribute('x1', A.x);
   hLine.setAttribute('y1', A.y);
@@ -984,48 +1069,48 @@ function renderRulerSvg() {
   hLine.setAttribute('stroke', '#047857');
   hLine.setAttribute('stroke-width', '4');
   hLine.setAttribute('stroke-dasharray', '6,4');
-  group.appendChild(hLine);
+  g.appendChild(hLine);
 
-  // Set Square (Прямоугольный треугольник-угольник)
-  if (setSquareActive) {
+  // Set square (Угольник 90°)
+  if (s3RulerApplied) {
     const ruler = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    ruler.setAttribute('points', `${H.x},${H.y} ${H.x},${A.y} ${H.x + 130},${H.y}`);
+    ruler.setAttribute('points', `${H.x},${H.y} ${H.x},${A.y} ${H.x + 140},${H.y}`);
     ruler.setAttribute('fill', 'rgba(245, 158, 11, 0.45)');
     ruler.setAttribute('stroke', '#d97706');
     ruler.setAttribute('stroke-width', '3');
-    group.appendChild(ruler);
+    g.appendChild(ruler);
 
-    // Inner cutout of set square
+    // Inner cutout of drafting triangle
     const inner = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    inner.setAttribute('points', `${H.x + 18},${H.y - 18} ${H.x + 18},${A.y + 55} ${H.x + 85},${H.y - 18}`);
+    inner.setAttribute('points', `${H.x + 20},${H.y - 20} ${H.x + 20},${A.y + 60} ${H.x + 90},${H.y - 20}`);
     inner.setAttribute('fill', '#ffffff');
     inner.setAttribute('stroke', '#d97706');
     inner.setAttribute('stroke-width', '2');
-    group.appendChild(inner);
+    g.appendChild(inner);
 
-    // Right angle badge on ruler
+    // Right angle marker on ruler
     const ra = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     ra.setAttribute('x', H.x);
-    ra.setAttribute('y', H.y - 16);
-    ra.setAttribute('width', '16');
-    ra.setAttribute('height', '16');
-    ra.setAttribute('fill', 'rgba(220, 38, 38, 0.3)');
+    ra.setAttribute('y', H.y - 18);
+    ra.setAttribute('width', '18');
+    ra.setAttribute('height', '18');
+    ra.setAttribute('fill', 'rgba(220, 38, 38, 0.35)');
     ra.setAttribute('stroke', '#dc2626');
     ra.setAttribute('stroke-width', '2');
-    group.appendChild(ra);
+    g.appendChild(ra);
 
     const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    txt.setAttribute('x', H.x + 40);
+    txt.setAttribute('x', H.x + 45);
     txt.setAttribute('y', H.y - 50);
     txt.setAttribute('font-family', 'var(--font-main)');
     txt.setAttribute('font-size', '15');
     txt.setAttribute('font-weight', '900');
     txt.setAttribute('fill', '#92400e');
     txt.textContent = 'УГОЛЬНИК 90°';
-    group.appendChild(txt);
+    g.appendChild(txt);
   }
 
-  // Text labels
+  // Label tags
   const addT = (txt, x, y, col) => {
     const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     t.setAttribute('x', x);
@@ -1035,23 +1120,26 @@ function renderRulerSvg() {
     t.setAttribute('font-weight', '900');
     t.setAttribute('fill', col);
     t.textContent = txt;
-    group.appendChild(t);
+    g.appendChild(t);
   };
 
-  addT('Основание a (сторона BC)', 280, 285, '#dc2626');
-  addT('Высота h (AH ⊥ BC)', 280, 160, '#047857');
+  addT('Основание a (сторона BC)', 240, 290, '#dc2626');
+  addT('Высота h (AH ⊥ BC)', 270, 160, '#047857');
+  addT('A', A.x - 5, A.y - 12, '#0f172a');
+  addT('B', B.x - 18, B.y + 6, '#0f172a');
+  addT('C', C.x + 12, C.y + 6, '#0f172a');
 }
 
-function renderAreaHalfSvg() {
-  const svg = document.getElementById('areaHalfSvg');
+function renderStep3AreaSvg() {
+  const svg = document.getElementById('s3AreaVisualSvg') || document.getElementById('areaHalfSvg');
   if (!svg) return;
   svg.innerHTML = '';
 
-  // Surrounding Rectangle: w = 240, h = 100, x = 80, y = 30
+  // Surrounding rectangle
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  rect.setAttribute('x', '80');
-  rect.setAttribute('y', '30');
-  rect.setAttribute('width', '240');
+  rect.setAttribute('x', '60');
+  rect.setAttribute('y', '25');
+  rect.setAttribute('width', '300');
   rect.setAttribute('height', '100');
   rect.setAttribute('fill', 'rgba(226, 232, 240, 0.4)');
   rect.setAttribute('stroke', '#94a3b8');
@@ -1061,7 +1149,7 @@ function renderAreaHalfSvg() {
 
   // Triangle inside (half of rectangle)
   const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-  poly.setAttribute('points', '80,130 320,130 200,30');
+  poly.setAttribute('points', '60,125 360,125 210,25');
   poly.setAttribute('fill', '#eff6ff');
   poly.setAttribute('stroke', '#2563eb');
   poly.setAttribute('stroke-width', '3');
@@ -1069,29 +1157,29 @@ function renderAreaHalfSvg() {
 
   // Red base
   const bLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  bLine.setAttribute('x1', '80');
-  bLine.setAttribute('y1', '130');
-  bLine.setAttribute('x2', '320');
-  bLine.setAttribute('y2', '130');
+  bLine.setAttribute('x1', '60');
+  bLine.setAttribute('y1', '125');
+  bLine.setAttribute('x2', '360');
+  bLine.setAttribute('y2', '125');
   bLine.setAttribute('stroke', '#dc2626');
   bLine.setAttribute('stroke-width', '5');
   svg.appendChild(bLine);
 
   // Height line
   const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  hLine.setAttribute('x1', '200');
-  hLine.setAttribute('y1', '30');
-  hLine.setAttribute('x2', '200');
-  hLine.setAttribute('y2', '130');
+  hLine.setAttribute('x1', '210');
+  hLine.setAttribute('y1', '25');
+  hLine.setAttribute('x2', '210');
+  hLine.setAttribute('y2', '125');
   hLine.setAttribute('stroke', '#047857');
   hLine.setAttribute('stroke-width', '3');
-  hLine.setAttribute('stroke-dasharray', '4,4');
+  hLine.setAttribute('stroke-dasharray', '5,4');
   svg.appendChild(hLine);
 
   // Base text
   const bTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  bTxt.setAttribute('x', '200');
-  bTxt.setAttribute('y', '155');
+  bTxt.setAttribute('x', '210');
+  bTxt.setAttribute('y', '152');
   bTxt.setAttribute('font-family', 'var(--font-mono)');
   bTxt.setAttribute('font-size', '16');
   bTxt.setAttribute('font-weight', '900');
@@ -1102,8 +1190,8 @@ function renderAreaHalfSvg() {
 
   // Height text
   const hTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  hTxt.setAttribute('x', '215');
-  hTxt.setAttribute('y', '85');
+  hTxt.setAttribute('x', '225');
+  hTxt.setAttribute('y', '80');
   hTxt.setAttribute('font-family', 'var(--font-mono)');
   hTxt.setAttribute('font-size', '16');
   hTxt.setAttribute('font-weight', '900');
@@ -1113,132 +1201,147 @@ function renderAreaHalfSvg() {
 }
 
 // =============================================================================
-// 9. STEP 4: PRACTICE & WORKBOOK CARDS
+// 9. STEP 4: WORKBOOK PRACTICE & TRAPS (32–45 MIN)
 // =============================================================================
-function switchPracTab(num) {
-  document.querySelectorAll('.prac-tab').forEach((t, i) => {
-    t.classList.toggle('active', i + 1 === num);
-  });
-  document.querySelectorAll('.prac-view').forEach((v, i) => {
-    v.classList.toggle('active', i + 1 === num);
+function switchPracTab(tabNum) {
+  [1, 2, 3].forEach(n => {
+    const btn = document.getElementById(`btnPracTab${n}`);
+    const view = document.getElementById(`pracView${n}`);
+    if (btn) btn.classList.toggle('active', n === tabNum);
+    if (view) view.classList.toggle('active', n === tabNum);
   });
   sfx.playClick();
 }
 window.switchPracTab = switchPracTab;
 
-function revealSubcaseAns(id) {
-  const el = document.getElementById(`subAns${id}`);
-  el.classList.toggle('show');
-  sfx.playPop();
+function toggleSubAnswer(id) {
+  const panel = document.getElementById(`ansPanel${id}`) || document.getElementById(`subAns${id}`);
+  if (panel) {
+    panel.classList.toggle('show');
+    sfx.playPop();
+  }
 }
-window.revealSubcaseAns = revealSubcaseAns;
+window.toggleSubAnswer = toggleSubAnswer;
+window.revealSubcaseAns = toggleSubAnswer; // alias
 
-function renderPracticeSubcases() {
+function renderStep4SVGs() {
   // SVG 1a (Obtuse triangle with BD outside)
-  const svg1a = document.getElementById('svgSub1a');
+  const svg1a = document.getElementById('s4Svg1a') || document.getElementById('svgSub1a');
   if (svg1a && !svg1a.hasChildNodes()) {
     svg1a.innerHTML = `
-      <polygon points="120,40 190,160 320,160" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-      <line x1="120" y1="160" x2="190" y2="160" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4"/>
-      <line x1="190" y1="160" x2="320" y2="160" stroke="#dc2626" stroke-width="4"/>
-      <line x1="120" y1="40" x2="120" y2="160" stroke="#047857" stroke-width="3" stroke-dasharray="5,4"/>
-      <rect x="120" y="145" width="15" height="15" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
-      <text x="110" y="35" font-weight="900" font-size="14">B</text>
-      <text x="185" y="178" font-weight="900" font-size="14">A</text>
-      <text x="325" y="170" font-weight="900" font-size="14">C</text>
-      <text x="110" y="178" font-weight="900" font-size="14">D</text>
-      <text x="230" y="180" fill="#dc2626" font-weight="900" font-size="13">Основание AC</text>
-      <text x="40" y="100" fill="#047857" font-weight="900" font-size="13">Высота BD ⊥</text>
+      <polygon points="120,35 190,150 330,150" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+      <line x1="120" y1="150" x2="190" y2="150" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="4,4"/>
+      <line x1="190" y1="150" x2="330" y2="150" stroke="#dc2626" stroke-width="4.5"/>
+      <line x1="120" y1="35" x2="120" y2="150" stroke="#047857" stroke-width="3.5" stroke-dasharray="5,4"/>
+      <rect x="120" y="135" width="15" height="15" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
+      <text x="110" y="30" font-weight="900" font-size="15" fill="#0f172a">B</text>
+      <text x="185" y="168" font-weight="900" font-size="15" fill="#0f172a">A</text>
+      <text x="335" y="158" font-weight="900" font-size="15" fill="#0f172a">C</text>
+      <text x="105" y="168" font-weight="900" font-size="15" fill="#047857">D</text>
+      <text x="240" y="172" fill="#dc2626" font-weight="900" font-size="13">Основание AC</text>
+      <text x="40" y="95" fill="#047857" font-weight="900" font-size="13">Высота BD ⊥</text>
     `;
   }
 
-  // SVG 1b (Base AC at top, BD downwards/upwards)
-  const svg1b = document.getElementById('svgSub1b');
+  // SVG 1b (Base AC at top, BD downwards)
+  const svg1b = document.getElementById('s4Svg1b') || document.getElementById('svgSub1b');
   if (svg1b && !svg1b.hasChildNodes()) {
     svg1b.innerHTML = `
-      <polygon points="80,50 300,50 190,160" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-      <line x1="80" y1="50" x2="300" y2="50" stroke="#dc2626" stroke-width="4"/>
-      <line x1="190" y1="160" x2="190" y2="50" stroke="#047857" stroke-width="3" stroke-dasharray="5,4"/>
-      <rect x="190" y="50" width="15" height="15" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
-      <text x="70" y="45" font-weight="900" font-size="14">A</text>
-      <text x="305" y="45" font-weight="900" font-size="14">C</text>
-      <text x="190" y="180" font-weight="900" font-size="14">B</text>
-      <text x="190" y="40" font-weight="900" font-size="14">D</text>
-      <text x="130" y="35" fill="#dc2626" font-weight="900" font-size="13">Основание AC сверху</text>
-      <text x="210" y="110" fill="#047857" font-weight="900" font-size="13">Высота BD ⊥</text>
+      <polygon points="80,45 320,45 200,150" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+      <line x1="80" y1="45" x2="320" y2="45" stroke="#dc2626" stroke-width="4.5"/>
+      <line x1="200" y1="150" x2="200" y2="45" stroke="#047857" stroke-width="3.5" stroke-dasharray="5,4"/>
+      <rect x="200" y="45" width="15" height="15" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
+      <text x="70" y="40" font-weight="900" font-size="15" fill="#0f172a">A</text>
+      <text x="325" y="40" font-weight="900" font-size="15" fill="#0f172a">C</text>
+      <text x="200" y="172" font-weight="900" font-size="15" fill="#0f172a">B</text>
+      <text x="200" y="35" font-weight="900" font-size="15" fill="#047857">D</text>
+      <text x="140" y="30" fill="#dc2626" font-weight="900" font-size="13">Основание AC сверху</text>
+      <text x="220" y="105" fill="#047857" font-weight="900" font-size="13">Высота BD ⊥</text>
     `;
   }
 }
+window.renderPracticeSubcases = renderStep4SVGs; // alias
 
-// Workbook interactive validation
-const wbExplanations = {
+// Interactive Workbook Cards 1-6 Click Handler
+const wbCardExplanations = {
   1: 'Угол ∠B = 90° прямой, значит сторона BC ⊥ AB и выходит из вершины C!',
   2: 'Из противолежащей вершины E опущен перпендикуляр EG на продолжение основания FD (∠G = 90°).',
-  3: 'Ловушка! На рисунке два перпендикуляра (RS и QT), но к стороне PQ из вершины R проведён именно RS ⊥ PQ!',
-  4: 'Ловушка! Отрезок LP ⊥ KM, а нам нужно основание LM! На него опущен перпендикуляр KN ⊥ LM.',
+  3: '⚠️ Ловушка! На рисунке два перпендикуляра (RS и QT), но к стороне PQ из вершины R проведён именно RS ⊥ PQ!',
+  4: '⚠️ Ловушка! Отрезок LP ⊥ KM, а нам нужно основание LM! На него опущен перпендикуляр KN ⊥ LM.',
   5: 'Прямой угол (90°) у точки D лежит на стороне AC (BD ⊥ AC).',
   6: 'Высота FH опущена под прямым углом на пунктирное продолжение стороны EG (FH ⊥ EG).'
 };
 
-function checkWbAnswer(cardNum, ansText, isCorrect) {
+function handleWbClick(cardNum, choice, isCorrect) {
   const card = document.getElementById(`wbCard${cardNum}`);
   const slot = document.getElementById(`slot${cardNum}`);
-  const hint = document.getElementById(`wbHint${cardNum}`);
-  const buttons = card.querySelectorAll('.wb-opt-btn');
+  const fb = document.getElementById(`wicFb${cardNum}`) || document.getElementById(`wbHint${cardNum}`);
 
-  buttons.forEach(btn => {
-    btn.classList.remove('correct', 'wrong');
-    if (btn.textContent.includes(ansText)) {
-      btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (card) {
+    const buttons = card.querySelectorAll('.wic-btn, .wb-opt-btn');
+    buttons.forEach(b => {
+      b.classList.remove('active-correct', 'active-wrong', 'correct', 'wrong');
+      if (b.textContent.includes(choice)) {
+        b.classList.add(isCorrect ? 'active-correct' : 'active-wrong');
+      }
+    });
+  }
+
+  if (slot) {
+    slot.textContent = choice;
+    slot.classList.toggle('filled-correct', isCorrect);
+    slot.classList.toggle('filled-wrong', !isCorrect);
+  }
+
+  if (fb) {
+    if (isCorrect) {
+      fb.className = 'wic-feedback correct show';
+      fb.innerHTML = `✓ <strong>Верно!</strong> ${wbCardExplanations[cardNum]}`;
+      sfx.playSuccess();
+      confetti.fire(35);
+    } else {
+      fb.className = 'wic-feedback wrong show';
+      fb.innerHTML = `✕ <strong>Ошибка!</strong> Попробуй другой вариант. Внимательно посмотри, куда падает угол 90°!`;
+      sfx.playWrong();
     }
-  });
-
-  if (isCorrect) {
-    slot.textContent = ansText;
-    slot.classList.add('filled-correct');
-    hint.textContent = `✓ Верно! ${wbExplanations[cardNum]}`;
-    sfx.playSuccess();
-    confetti.fire(35);
-  } else {
-    hint.textContent = `✕ Ошибка! Попробуй другой вариант.`;
-    sfx.playWrong();
   }
 }
-window.checkWbAnswer = checkWbAnswer;
+window.handleWbClick = handleWbClick;
+window.checkWbAnswer = handleWbClick; // alias
 
 // =============================================================================
-// 10. CLASSROOM QUIZ (5 KEY QUESTIONS ON TRIANGLE HEIGHT)
+// 10. STEP 5: FINAL QUIZ (5 KEY QUESTIONS ON TRIANGLE BASE & HEIGHT)
 // =============================================================================
 const quizData = [
   {
-    q: '1. Чему равна сумма всех трёх углов любого треугольника?',
+    q: '1. Чему равна сумма всех трёх углов абсолютно любого треугольника?',
     options: ['90°', '180°', '360°', '100°'],
     answer: 1,
-    hint: 'Правильно! Сумма углов в абсолютно любом треугольнике всегда равна 180°!'
+    hint: 'Правильно! Сумма углов в любом треугольнике всегда равна 180°!'
   },
   {
     q: '2. Сколько всего высот можно провести в одном треугольнике?',
-    options: ['Только 1', 'Ровно 2', 'Ровно 3 (к каждой стороне)', 'Бесконечно много'],
+    options: ['Только 1', 'Ровно 2', 'Ровно 3 (к каждой из трёх сторон)', 'Бесконечно много'],
     answer: 2,
-    hint: 'Супер! У треугольника 3 стороны, поэтому к каждому основанию можно провести свою высоту (всего 3)!'
+    hint: 'Супер! У любого треугольника 3 стороны, поэтому можно опустить 3 разные высоты!'
   },
   {
-    q: '3. В каком треугольнике высота совпадает с его боковой стороной?',
+    q: '3. В каком треугольнике высота совпадает с его собственной боковой стороной?',
     options: ['В остроугольном', 'В прямоугольном', 'В тупоугольном', 'Ни в каком'],
     answer: 1,
-    hint: 'Отлично! В прямоугольном треугольнике стороны прямого угла уже перпендикулярны друг другу!'
+    hint: 'Отлично! В прямоугольном треугольнике стороны прямого угла уже перпендикулярны!'
   },
   {
-    q: '4. В каком треугольнике высота падает СНАРУЖИ на продолжение стороны?',
+    q: '4. В каком треугольнике высота падает СНАРУЖИ на продолжение основания?',
     options: ['В прямоугольном', 'В равностороннем', 'В тупоугольном', 'В остроугольном'],
     answer: 2,
-    hint: 'Точно! Вершина нависает сбоку, поэтому опускаем высоту на пунктирное продолжение основания!'
+    hint: 'Точно! Вершина нависает сбоку, поэтому опускаем высоту на пунктирную дорожку!'
   },
   {
     q: '5. Основание треугольника a = 10 см, а высота h = 6 см. Чему равна его площадь S?',
     options: ['60 см²', '30 см²', '16 см²', '40 см²'],
     answer: 1,
-    hint: 'Браво! S = (a · h) : 2 = (10 · 6) : 2 = 60 : 2 = 30 см² (не забывай делить на 2)!'
+    hint: 'Браво! S = (a · h) : 2 = (10 · 6) : 2 = 60 : 2 = 30 см² (половина прямоугольника)!'
   }
 ];
 
@@ -1251,23 +1354,27 @@ let quizState = {
 function renderQuizQuestion() {
   quizState.answered = false;
   const qObj = quizData[quizState.index];
-  document.getElementById('quizQIndex').textContent = `${quizState.index + 1} / ${quizData.length}`;
-  document.getElementById('quizQuestionText').textContent = qObj.q;
-
+  const qIndexEl = document.getElementById('quizQIndex');
+  const qTextEl = document.getElementById('quizQuestionText');
   const grid = document.getElementById('quizOptionsGrid');
-  grid.innerHTML = '';
-
-  const letters = ['A', 'B', 'C', 'D'];
-  qObj.options.forEach((opt, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-option-btn';
-    btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span> <span>${opt}</span>`;
-    btn.addEventListener('click', () => selectQuizAnswer(idx, btn));
-    grid.appendChild(btn);
-  });
-
   const feedbackBar = document.getElementById('quizFeedbackBar');
-  feedbackBar.classList.remove('show');
+
+  if (qIndexEl) qIndexEl.textContent = `${quizState.index + 1} / ${quizData.length}`;
+  if (qTextEl) qTextEl.textContent = qObj.q;
+
+  if (grid) {
+    grid.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    qObj.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option-btn';
+      btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span> <span>${opt}</span>`;
+      btn.addEventListener('click', () => selectQuizAnswer(idx, btn));
+      grid.appendChild(btn);
+    });
+  }
+
+  if (feedbackBar) feedbackBar.classList.remove('show');
 }
 
 function selectQuizAnswer(selectedIndex, buttonEl) {
@@ -1282,22 +1389,23 @@ function selectQuizAnswer(selectedIndex, buttonEl) {
 
   if (isCorrect) {
     quizState.score++;
-    document.getElementById('quizScore').textContent = `${quizState.score} ⭐`;
+    const scoreEl = document.getElementById('quizScore');
+    if (scoreEl) scoreEl.textContent = `${quizState.score} ⭐`;
     buttonEl.classList.add('correct');
-    feedbackIcon.textContent = '🎉';
-    feedbackMsg.textContent = qObj.hint;
+    if (feedbackIcon) feedbackIcon.textContent = '🎉';
+    if (feedbackMsg) feedbackMsg.textContent = qObj.hint;
     sfx.playSuccess();
     confetti.fire(50);
   } else {
     buttonEl.classList.add('wrong');
     const options = document.querySelectorAll('.quiz-option-btn');
     if (options[qObj.answer]) options[qObj.answer].classList.add('correct');
-    feedbackIcon.textContent = '🤔';
-    feedbackMsg.textContent = `Ошибка! ${qObj.hint}`;
+    if (feedbackIcon) feedbackIcon.textContent = '🤔';
+    if (feedbackMsg) feedbackMsg.textContent = `Ошибка! ${qObj.hint}`;
     sfx.playWrong();
   }
 
-  feedbackBar.classList.add('show');
+  if (feedbackBar) feedbackBar.classList.add('show');
 }
 
 function nextQuizQuestion() {
@@ -1306,11 +1414,15 @@ function nextQuizQuestion() {
     renderQuizQuestion();
     sfx.playClick();
   } else {
-    document.getElementById('quizBody').style.display = 'none';
+    const body = document.getElementById('quizBody');
     const finishCard = document.getElementById('quizFinishCard');
-    finishCard.style.display = 'flex';
-    document.getElementById('quizFinalSummary').textContent =
-      `Вы правильно ответили на ${quizState.score} из ${quizData.length} вопросов!`;
+    const summary = document.getElementById('quizFinalSummary');
+
+    if (body) body.style.display = 'none';
+    if (finishCard) finishCard.style.display = 'flex';
+    if (summary) {
+      summary.textContent = `Вы правильно ответили на ${quizState.score} из ${quizData.length} вопросов!`;
+    }
     sfx.playSuccess();
     confetti.fire(120);
   }
@@ -1320,9 +1432,14 @@ window.nextQuizQuestion = nextQuizQuestion;
 function restartQuiz() {
   quizState.index = 0;
   quizState.score = 0;
-  document.getElementById('quizScore').textContent = '0 ⭐';
-  document.getElementById('quizBody').style.display = 'flex';
-  document.getElementById('quizFinishCard').style.display = 'none';
+  const scoreEl = document.getElementById('quizScore');
+  const body = document.getElementById('quizBody');
+  const finishCard = document.getElementById('quizFinishCard');
+
+  if (scoreEl) scoreEl.textContent = '0 ⭐';
+  if (body) body.style.display = 'flex';
+  if (finishCard) finishCard.style.display = 'none';
+
   renderQuizQuestion();
   sfx.playClick();
 }
@@ -1356,7 +1473,7 @@ const notebookData = {
     `
   },
   2: {
-    title: 'Блок 2 — Запись высот, периметр и площадь',
+    title: 'Блок 2 — Три случая высот, периметр и площадь',
     time: 'Рекомендуемое время: ~9 минут',
     mins: 9,
     html: `
@@ -1414,17 +1531,23 @@ function openNotebookModal(blockNum) {
   const data = notebookData[blockNum];
   if (!data) return;
 
-  document.getElementById('nbTitle').textContent = data.title;
-  document.getElementById('nbTime').textContent = data.time;
-  document.getElementById('notebookContent').innerHTML = data.html;
+  const title = document.getElementById('nbTitle');
+  const time = document.getElementById('nbTime');
+  const content = document.getElementById('notebookContent');
+  const modal = document.getElementById('notebookModal');
 
-  document.getElementById('notebookModal').classList.add('active');
+  if (title) title.textContent = data.title;
+  if (time) time.textContent = data.time;
+  if (content) content.innerHTML = data.html;
+  if (modal) modal.classList.add('active');
+
   sfx.playClick();
 }
 window.openNotebookModal = openNotebookModal;
 
 function closeNotebookModal() {
-  document.getElementById('notebookModal').classList.remove('active');
+  const modal = document.getElementById('notebookModal');
+  if (modal) modal.classList.remove('active');
   sfx.playClick();
 }
 window.closeNotebookModal = closeNotebookModal;
@@ -1439,12 +1562,14 @@ function startNotebookCountdown() {
 }
 window.startNotebookCountdown = startNotebookCountdown;
 
-// Initialize on load
+// =============================================================================
+// 12. INITIALIZATION ON DOM READY
+// =============================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  renderTriangleBaseSvg();
-  renderCaseSvg();
-  renderRulerSvg();
-  renderAreaHalfSvg();
-  renderPracticeSubcases();
+  renderStep1Svg();
+  renderStep2Svg();
+  renderStep3RulerSvg();
+  renderStep3AreaSvg();
+  renderStep4SVGs();
   renderQuizQuestion();
 });

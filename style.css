@@ -1,6 +1,6 @@
 /* ==========================================================================
    5th Grade Mathematics: Triangle Base & Height Interactive Smartboard Stylesheet
-   Optimized for: Interactive Whiteboards (16:9, Touch, Stylus, High Visibility)
+   Designed for Clarity, Accessibility, Touch Responsiveness and Visual Structure
    ========================================================================== */
 
 :root {
@@ -46,7 +46,7 @@
   padding: 0;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  touch-action: manipulation; /* Instant touch response, no 300ms tap delay */
+  touch-action: manipulation;
 }
 
 body {
@@ -109,7 +109,7 @@ body {
 }
 
 .badge-title {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.05em;
   color: #fecaca;
@@ -140,10 +140,10 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-main);
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s;
   min-height: 48px;
 }
 
@@ -162,7 +162,7 @@ body {
 
 .step-btn .btn-time {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #94a3b8;
   background: #ffffff;
   padding: 2px 6px;
@@ -216,7 +216,7 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
   cursor: pointer;
   min-height: 48px;
@@ -269,7 +269,7 @@ body {
   border-radius: var(--radius-sm);
   padding: 8px 6px;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   color: var(--text-main);
 }
@@ -319,7 +319,7 @@ body {
   padding: 0 12px;
   font-family: var(--font-main);
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-main);
   cursor: pointer;
 }
@@ -376,7 +376,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -401,7 +401,7 @@ body {
 
 .section-title-wrap h2 {
   font-size: 1.85rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #0f172a;
 }
 
@@ -413,7 +413,7 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-main);
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   display: flex;
@@ -474,7 +474,7 @@ body {
 
 .math-hl {
   color: #dc2626;
-  font-weight: 800;
+  font-weight: 900;
   background: #fee2e2;
   padding: 2px 8px;
   border-radius: 6px;
@@ -527,7 +527,7 @@ body {
 
 .intro-card h3 {
   font-size: 1.35rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #0f172a;
   margin-bottom: 0.5rem;
 }
@@ -541,7 +541,7 @@ body {
 }
 
 .card-action {
-  font-weight: 800;
+  font-weight: 900;
   color: #dc2626;
   font-size: 1.05rem;
 }
@@ -576,226 +576,254 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-main);
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
   white-space: nowrap;
   min-height: var(--touch-target-min);
 }
 
-.primary-big-btn:hover {
-  transform: scale(1.02);
+/* ==========================================================================
+   SIMPLE EXPLAIN BANNER (FOR 5TH GRADERS)
+   ========================================================================== */
+.simple-explain-box {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  border-left: 6px solid #dc2626;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-/* ==========================================================================
-   COMMON LAYOUTS & SVG STAGES
-   ========================================================================== */
-.two-col-grid {
+.seb-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.seb-content {
+  font-size: 1.15rem;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+.hl-red-text {
+  color: #dc2626;
+  font-weight: 900;
+  background: #fee2e2;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Two-column responsive layout */
+.two-col-layout {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 1.5rem;
   flex: 1;
 }
 
-.interactive-panel {
+.stage-card {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.panel-header {
+.stage-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.panel-header h4 {
-  font-size: 1.15rem;
-  font-weight: 800;
+.stage-card-header h4 {
+  font-size: 1.2rem;
+  font-weight: 900;
   color: #0f172a;
 }
 
-.panel-tag {
-  background: #fee2e2;
-  color: #b91c1c;
+.status-pill {
   padding: 4px 12px;
   border-radius: var(--radius-pill);
-  font-weight: 800;
+  font-weight: 900;
   font-size: 0.9rem;
 }
 
-.svg-stage {
+.status-pill.red { background: #fee2e2; color: #b91c1c; }
+.status-pill.green { background: #dcfce7; color: #15803d; }
+
+.svg-viewport {
   background: #ffffff;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
   padding: 0.5rem;
+  min-height: 340px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 320px;
 }
 
-.svg-stage svg {
+.svg-viewport svg {
   width: 100%;
-  height: 320px;
+  height: 340px;
   display: block;
 }
 
-/* Base Picker Bar */
-.base-picker-bar {
+/* Touch Button Group */
+.touch-button-group {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
 
-.base-select-btn {
+.touch-btn {
   background: #f8fafc;
   border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
-  padding: 10px 14px;
+  padding: 12px 16px;
   text-align: left;
   font-family: var(--font-main);
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-weight: 900;
   color: #0f172a;
   cursor: pointer;
-  min-height: 48px;
+  min-height: 52px;
   transition: all 0.15s;
 }
 
-.base-select-btn:hover,
-.base-select-btn.active {
+.touch-btn:hover,
+.touch-btn.active {
   background: #fee2e2;
   border-color: #dc2626;
   color: #991b1b;
 }
 
-.metaphor-callout {
-  background: #fffbeb;
-  border: 2px solid #fef3c7;
+.callout-tip {
+  background: #f0fdf4;
+  border: 2px solid #bbf7d0;
   border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
+  padding: 0.85rem 1.15rem;
   font-size: 1.05rem;
+  color: #166534;
 }
 
-.metaphor-icon {
-  font-size: 2.2rem;
+.callout-tip.yellow {
+  background: #fffbeb;
+  border-color: #fef3c7;
+  color: #92400e;
 }
 
-/* Theory Side */
-.theory-panel {
+/* Side Theory Stack */
+.side-theory-stack {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.theory-card h3 {
-  font-size: 1.25rem;
-  font-weight: 800;
+.mini-card {
+  padding: 1.25rem;
+}
+
+.mini-card-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #0f172a;
   margin-bottom: 0.75rem;
 }
 
-.elements-pills-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+.tri-facts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.elem-pill {
+.fact-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 0.75rem;
-  text-align: center;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 1.05rem;
 }
 
-.pill-badge {
-  display: block;
+.fact-badge {
   font-size: 0.75rem;
   font-weight: 900;
-  color: var(--text-light);
-  margin-bottom: 0.25rem;
-}
-
-.elem-pill strong {
-  font-size: 1rem;
   color: var(--primary);
-  font-family: var(--font-mono);
+  background: var(--primary-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
-.tri-types-grid {
+.tri-type-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
-.type-mini-card {
+.tt-item {
   background: #f8fafc;
   border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
-  padding: 0.85rem;
+  padding: 0.75rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.type-mini-card:hover,
-.type-mini-card.active {
+.tt-item:hover,
+.tt-item.active {
   background: #eff6ff;
   border-color: var(--primary);
 }
 
-.type-icon {
-  font-size: 1.6rem;
-  margin-bottom: 0.25rem;
-}
-
-.type-mini-card strong {
-  display: block;
-  font-size: 0.95rem;
+.tt-icon {
+  font-size: 1.5rem;
   margin-bottom: 0.2rem;
 }
 
-.type-mini-card p {
+.tt-text strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.tt-text span {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-.rule-card {
+.definition-card {
   background: #eff6ff;
   border-left: 5px solid var(--primary);
 }
 
-.rule-header {
+.def-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 1.15rem;
   color: #1e3a8a;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
-.rule-icon {
-  font-size: 1.4rem;
+.def-star {
+  font-size: 1.3rem;
 }
 
-.rule-card p {
-  font-size: 1.05rem;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-}
-
-.symbol-badge {
+.def-sign {
   background: #ffffff;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 800;
   color: #0369a1;
+  margin-top: 0.5rem;
   display: inline-block;
 }
 
@@ -816,7 +844,7 @@ body {
   color: #047857;
   font-family: var(--font-main);
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 900;
   padding: 12px 20px;
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -830,7 +858,7 @@ body {
   border: none;
   font-family: var(--font-main);
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 900;
   padding: 12px 24px;
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -849,7 +877,7 @@ body {
   color: var(--text-muted);
   font-family: var(--font-main);
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
   padding: 12px 20px;
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -859,92 +887,109 @@ body {
 /* ==========================================================================
    2. STEP 2: THREE CASES OF HEIGHT
    ========================================================================== */
-.cases-tab-bar {
+.case-tabs-container {
   display: flex;
   gap: 0.75rem;
   margin-bottom: 1.25rem;
 }
 
-.case-tab {
+.case-selector-btn {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: var(--radius-pill);
-  border: 2px solid #cbd5e1;
   background: #ffffff;
-  font-family: var(--font-main);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--text-muted);
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  text-align: left;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
   transition: all 0.15s;
-  min-height: var(--touch-target-min);
+  min-height: 72px;
 }
 
-.case-tab.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-}
-
-.case-letter {
-  background: rgba(0, 0, 0, 0.1);
+.cs-badge {
+  font-size: 0.75rem;
+  font-weight: 900;
+  background: #e2e8f0;
+  color: var(--text-main);
   padding: 2px 8px;
-  border-radius: 6px;
-  margin-right: 4px;
-}
-
-.case-desc-banner {
-  background: #eff6ff;
-  border-left: 4px solid var(--primary);
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-}
-
-.case-desc-banner strong {
-  display: block;
-  font-size: 1.1rem;
-  color: #1e3a8a;
+  border-radius: 4px;
+  width: fit-content;
   margin-bottom: 0.2rem;
 }
 
-.case-desc-banner p {
-  font-size: 1rem;
-  color: #334155;
+.cs-name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #0f172a;
 }
 
-.case-actions-bar {
+.cs-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.case-selector-btn.active {
+  background: #eff6ff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.case-selector-btn.active .cs-badge {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.case-selector-btn.active .cs-name {
+  color: var(--primary-dark);
+}
+
+.case-explanation-header {
+  background: #eff6ff;
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.ceh-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1e3a8a;
+  margin-bottom: 0.25rem;
+}
+
+.ceh-desc {
+  font-size: 1.05rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.case-inspect-bar {
   display: flex;
   gap: 0.5rem;
 }
 
-.case-act-btn {
+.inspect-btn {
   flex: 1;
   background: #f8fafc;
   border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
   padding: 10px;
   font-family: var(--font-main);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   min-height: 48px;
 }
 
-.case-act-btn.active {
+.inspect-btn.active {
   background: #fef3c7;
   border-color: #f59e0b;
   color: #b45309;
 }
 
-/* Task 2 Box (EFG) */
-.task2-box {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.task2-badge {
+/* Task 2 Showcase (EFG) */
+.t2-badge {
   font-size: 0.75rem;
   font-weight: 900;
   color: #6d28d9;
@@ -952,15 +997,17 @@ body {
   padding: 4px 10px;
   border-radius: var(--radius-pill);
   width: fit-content;
+  margin-bottom: 0.5rem;
 }
 
-.three-heights-picker {
+.efg-interactive-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  margin: 0.75rem 0;
 }
 
-.th-btn {
+.efg-btn {
   background: #f8fafc;
   border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
@@ -969,30 +1016,28 @@ body {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: all 0.15s;
 }
 
-.th-btn strong {
+.efg-btn strong {
   font-size: 1rem;
   color: #0f172a;
 }
 
-.th-btn span {
+.efg-btn span {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
-.th-btn:hover,
-.th-btn.active {
+.efg-btn.active {
   background: #eff6ff;
   border-color: var(--primary);
 }
 
-.th-btn.active strong {
+.efg-btn.active strong {
   color: var(--primary);
 }
 
-.dialog-bubble {
+.girl-answer-box {
   background: #ecfdf5;
   border: 2px solid #a7f3d0;
   border-radius: var(--radius-md);
@@ -1000,88 +1045,101 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  font-size: 1rem;
-  color: #065f46;
 }
 
-.dialog-avatar {
-  font-size: 2rem;
+.girl-emoji {
+  font-size: 2.2rem;
+}
+
+.girl-text {
+  font-size: 1rem;
+  color: #065f46;
+  line-height: 1.45;
 }
 
 /* ==========================================================================
-   3. STEP 3: SET SQUARE & FORMULAS
+   3. STEP 3: SET SQUARE & AREA FORMULA
    ========================================================================== */
-.set-square-rules {
+.rules-flex-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
-.ss-rule-box {
+.rule-box-card {
   background: #f8fafc;
   border: 2px solid #e2e8f0;
   border-radius: var(--radius-md);
   padding: 0.85rem 1rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  font-size: 0.95rem;
 }
 
-.ss-rule-num {
-  width: 28px;
-  height: 28px;
+.rb-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.rule-box-card strong {
+  display: block;
+  font-size: 1rem;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.rule-box-card p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.ruler-controls-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.ruler-action-btn {
+  flex: 1;
   background: var(--primary);
   color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.ruler-actions-row {
-  display: flex;
-  gap: 0.65rem;
-}
-
-.ruler-btn {
-  flex: 1;
-  padding: 12px;
+  border: none;
   border-radius: var(--radius-pill);
+  padding: 12px 18px;
   font-family: var(--font-main);
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-weight: 900;
   cursor: pointer;
   min-height: var(--touch-target-min);
 }
 
-.ruler-btn.active {
-  background: var(--primary);
-  color: #ffffff;
-  border: none;
+.ruler-action-btn.secondary {
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  color: var(--text-main);
 }
 
-.area-visual-box {
+.half-rect-visual-stage {
   background: #f8fafc;
   border: 2px solid #e2e8f0;
   border-radius: var(--radius-md);
-  height: 180px;
+  height: 170px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0.75rem 0;
 }
 
-.formula-chips-group {
+.formula-banner-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.f-card-big {
+.fb-item {
   background: #eff6ff;
   border: 2px solid #bfdbfe;
   border-radius: var(--radius-md);
@@ -1089,12 +1147,12 @@ body {
   text-align: center;
 }
 
-.f-card-big.p-card {
+.fb-item.p-item {
   background: #f5f3ff;
   border-color: #ddd6fe;
 }
 
-.f-card-label {
+.fb-lbl {
   display: block;
   font-size: 0.75rem;
   font-weight: 900;
@@ -1102,7 +1160,7 @@ body {
   letter-spacing: 0.05em;
 }
 
-.f-card-math {
+.fb-math {
   font-family: var(--font-mono);
   font-size: 1.55rem;
   font-weight: 900;
@@ -1110,26 +1168,26 @@ body {
   margin: 0.25rem 0;
 }
 
-.f-card-sub {
+.fb-sub {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
-.reverse-formulas-card {
+.reverse-calc-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-md);
   padding: 0.85rem 1rem;
 }
 
-.reverse-formulas-card h5 {
+.reverse-calc-card h5 {
   font-size: 0.95rem;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--text-main);
   margin-bottom: 0.4rem;
 }
 
-.reverse-chips-row {
+.rev-formulas-chips {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -1151,13 +1209,13 @@ body {
 /* ==========================================================================
    4. STEP 4: PRACTICE & WORKBOOK CARDS
    ========================================================================== */
-.practice-tabs-bar {
+.practice-tabs-header {
   display: flex;
   gap: 0.65rem;
   margin-bottom: 1.25rem;
 }
 
-.prac-tab {
+.prac-subtab {
   flex: 1;
   padding: 12px 14px;
   border-radius: var(--radius-pill);
@@ -1165,33 +1223,33 @@ body {
   background: #ffffff;
   font-family: var(--font-main);
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s;
   min-height: var(--touch-target-min);
 }
 
-.prac-tab.active {
+.prac-subtab.active {
   background: #2563eb;
   border-color: #2563eb;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
-.prac-view {
+.prac-content-view {
   display: none;
 }
 
-.prac-view.active {
+.prac-content-view.active {
   display: block;
 }
 
-.prac-header {
+.prac-view-title {
   margin-bottom: 1.25rem;
 }
 
-.prac-badge {
+.pvt-tag {
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -1201,27 +1259,27 @@ body {
   border-radius: var(--radius-pill);
 }
 
-.prac-header h3 {
+.prac-view-title h3 {
   font-size: 1.45rem;
-  font-weight: 800;
+  font-weight: 900;
   margin-top: 0.35rem;
 }
 
-/* Cases Split Grid (BD height?) */
-.cases-split-grid {
+/* Subcases Pair Grid (BD Height) */
+.subcases-pair-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
 
-.subcase-box {
+.subcase-single-card {
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.subcase-tag {
+.ssc-badge {
   font-size: 0.8rem;
   font-weight: 900;
   color: #047857;
@@ -1230,7 +1288,7 @@ body {
   border-radius: 4px;
 }
 
-.subcase-visual {
+.ssc-svg-container {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-md);
@@ -1240,26 +1298,31 @@ body {
   justify-content: center;
 }
 
-.subcase-visual svg {
+.ssc-svg-container svg {
   width: 100%;
   height: 100%;
 }
 
-.reveal-ans-pill {
+.ssc-q {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.toggle-answer-btn {
   background: #eff6ff;
   border: 2px solid #bfdbfe;
   color: #1d4ed8;
   font-family: var(--font-main);
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 900;
   padding: 10px 16px;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  width: 100%;
   min-height: 44px;
 }
 
-.subcase-explanation {
+.ssc-answer-panel {
   display: none;
   background: #f8fafc;
   border-radius: var(--radius-md);
@@ -1267,11 +1330,11 @@ body {
   margin-top: 0.5rem;
 }
 
-.subcase-explanation.show {
+.ssc-answer-panel.show {
   display: block;
 }
 
-.ans-badge {
+.ap-badge {
   display: inline-block;
   font-size: 0.95rem;
   font-weight: 900;
@@ -1280,19 +1343,19 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.ans-badge.green {
+.ap-badge.green {
   background: #dcfce7;
   color: #15803d;
 }
 
-/* Workbook Cards Grid */
-.workbook-cards-grid {
+/* Cards Interactive Grid */
+.cards-interactive-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-.wb-card {
+.wb-interactive-card {
   background: #ffffff;
   border: 2px solid #cbd5e1;
   border-radius: var(--radius-md);
@@ -1302,32 +1365,33 @@ body {
   gap: 0.65rem;
 }
 
-.wb-card.trap-border {
+.wb-interactive-card.trap-highlight {
   border-color: #fde68a;
   background: #fffbeb;
 }
 
-.wb-top {
+.wic-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.85rem;
 }
 
-.wb-num {
+.wic-num {
   font-weight: 900;
+  font-size: 0.85rem;
   background: #e2e8f0;
   padding: 2px 8px;
   border-radius: 4px;
 }
 
-.wb-condition {
+.wic-body {
   font-size: 1.15rem;
   font-weight: 800;
   color: #0f172a;
+  line-height: 1.4;
 }
 
-.wb-slot {
+.slot-chip {
   display: inline-block;
   background: #f1f5f9;
   border: 2px dashed #94a3b8;
@@ -1337,19 +1401,19 @@ body {
   font-family: var(--font-mono);
 }
 
-.wb-slot.filled-correct {
+.slot-chip.filled-correct {
   background: #dcfce7;
   border-color: #10b981;
   border-style: solid;
   color: #15803d;
 }
 
-.wb-options {
+.wic-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.wb-opt-btn {
+.wic-btn {
   flex: 1;
   padding: 10px 8px;
   border-radius: var(--radius-sm);
@@ -1362,43 +1426,40 @@ body {
   min-height: 44px;
 }
 
-.wb-opt-btn:hover {
-  background: #f1f5f9;
-}
-
-.wb-opt-btn.correct {
+.wic-btn.correct {
   background: #10b981;
   color: #ffffff;
   border-color: #10b981;
 }
 
-.wb-opt-btn.wrong {
+.wic-btn.wrong {
   background: #ef4444;
   color: #ffffff;
   border-color: #ef4444;
 }
 
-.wb-hint {
-  font-size: 0.85rem;
+.wic-feedback {
+  font-size: 0.88rem;
   color: #065f46;
-  font-weight: 700;
+  font-weight: 800;
+  min-height: 20px;
 }
 
-/* Problems Split Grid (View 3) */
-.problems-split-grid {
+/* Tasks Clean Grid */
+.tasks-clean-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
 
-.prob-item-card {
+.clean-task-card {
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
 }
 
-.prob-tag {
+.ctc-tag {
   font-size: 0.75rem;
   font-weight: 900;
   color: #047857;
@@ -1408,12 +1469,12 @@ body {
   width: fit-content;
 }
 
-.prob-task-text {
+.ctc-desc {
   font-size: 1.15rem;
   color: #1e293b;
 }
 
-.prob-solve-steps {
+.ctc-solution {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-md);
@@ -1423,11 +1484,11 @@ body {
   gap: 0.5rem;
 }
 
-.step-line {
+.sol-row {
   font-size: 1.05rem;
 }
 
-.prob-ans-banner {
+.sol-answer-badge {
   background: #dbeafe;
   padding: 8px 12px;
   border-radius: var(--radius-sm);
@@ -1465,7 +1526,7 @@ body {
 
 .quiz-title-wrap h2 {
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 900;
   margin-top: 0.25rem;
 }
 
@@ -1507,7 +1568,7 @@ body {
 
 .question-title {
   font-size: 1.65rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #0f172a;
   line-height: 1.35;
 }
@@ -1526,7 +1587,7 @@ body {
   text-align: left;
   font-family: var(--font-main);
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #0f172a;
   cursor: pointer;
   display: flex;
@@ -1602,7 +1663,7 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-main);
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
 }
 
@@ -1695,13 +1756,13 @@ body {
 
 .notebook-title-row h3 {
   font-size: 1.45rem;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .nb-sub {
   font-size: 0.95rem;
   color: #047857;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .nb-actions {
@@ -1718,7 +1779,7 @@ body {
   border-radius: var(--radius-pill);
   font-family: var(--font-main);
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   min-height: 44px;
 }
@@ -1917,10 +1978,10 @@ body {
   .intro-cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .two-col-grid,
-  .cases-split-grid,
-  .workbook-cards-grid,
-  .problems-split-grid {
+  .two-col-layout,
+  .subcases-pair-grid,
+  .cards-interactive-grid,
+  .tasks-clean-grid {
     grid-template-columns: 1fr;
   }
 }
